@@ -1,0 +1,20 @@
+.acc-m{
+    margin:30px;
+    margin-left: 3%;
+    width: 70% ! important
+}
+.same-row{
+    display: flex;
+}
+.name-space{
+    width: 300px;
+    display: flex;
+    margin-top: 10px
+}
+.name-wd{
+    width: 75px;  
+    margin-top: 10px;
+}
+.space-checkbox{
+margin-top: 5px
+}
