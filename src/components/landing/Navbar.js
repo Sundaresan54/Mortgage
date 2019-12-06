@@ -11,7 +11,7 @@ export default class Header extends React.Component {
     render() {
         return (
             <div>
-                <Navbar bg="light" expand="lg">
+                <Navbar bg="primary" variant="dark" expand="lg">
                     <Navbar.Brand href="#home">Mortgage Loan</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav" className="left-spacing"  >

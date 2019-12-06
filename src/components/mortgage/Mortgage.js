@@ -8,9 +8,48 @@ export default class Mortgage extends React.Component {
         this.state = {
             activeIndex: 0,
             sameAddr: false,
+            mortgageInfo:{
+                fname:'',
+                lname:'',
+                age: undefined,
+                gender:'',
+                mobno:'',
+                alter1:''
+            },
+            expLoan:'',
+            asset:[{
+                assetType:"",
+                assetValue:'',
+                doc:''
+            }],
+            Address:{
+                permanentAddr:{
+                    aline1:'',
+                    aline2:'',
+                    landmark:'',
+                    city:'',
+                    state:'',
+                    country:''
+                },
+                currentAddr:{
+                    aline1:'',
+                    aline2:'',
+                    landmark:'',
+                    city:'',
+                    state:'',
+                    country:''
+                }
+            },
+            finacialDetails:{
+                employee:'',
+                income:'',
+                company:''
+            },
+           
 
 
         }
+    
     }
 
     handleClick = (e, titleProps) => {
@@ -27,10 +66,33 @@ export default class Mortgage extends React.Component {
         }
         )
     }
+    handleOnChange(e) {
+        let mortgageInfo =this.state.mortgageInfo;
+        mortgageInfo[e.target.name] = e.target.value
+        if(e.target.name==="email"){
+            mortgageInfo["emailId"] = e.target.value
+        }
+        console.log(mortgageInfo,"hgello")
+        console.log("inside");
 
+        
+    }
+    // handleGender({value},event){
+    //     // console.log(value,"dropdown")
+    //     // let bird_name = event;
+    // console.log(event,"dropppppp");
+    // }
+
+     handleGender = (e, { value }) => {
+         console.log(value);
+        this.setState({ gender:value },()=>{
+            console.log("gender",this.state.gender)
+        })
+        
+     }
     render() {
-        const { activeIndex } = this.state
-        const friendOptions = [
+        const { activeIndex,value } = this.state
+        const options = [
             {
                 key: 'Male',
                 text: 'Male',
@@ -90,43 +152,51 @@ export default class Mortgage extends React.Component {
                             <div className="name-wd" >
                                 Address line 1:
         </div >
-                            <div class="ui input"><input type="text" placeholder="Address line 1" /></div>
+                            <div className="ui input"><input type="text"name='line1' onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.aline1} placeholder="Address line 1" /></div>
                         </div>
 
                         <div className="name-space">
                             <div className="name-wd">
                                 Address line 2:
         </div >
-                            <div class="ui input"><input type="text" placeholder="Address line 2" /></div>
+                            <div className="ui input"><input type="text" name='line2' onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.aline2}  placeholder="Address line 2" /></div>
                         </div>
                         <div className="name-space">
                             <div className="name-wd">
                                 LandMark:
         </div >
-                            <div class="ui input"><input type="text" placeholder="LandMark" /></div>
+                            <div className="ui input"><input type="text" name='landmark'
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.landmark}
+                            placeholder="LandMark" /></div>
                         </div>
                     </Col></Row>
 
 
                 <Row >
                     <Col className="same-row">
-                        <div className="name-space">
+                        <div className="name-space"> 
                             <div className="name-wd" >
                                 City:
         </div >
-                            <div class="ui input"><input type="email" placeholder="City" /></div>
+                            <div className="ui input"><input type="text" name="city"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.city}
+                            placeholder="City" /></div>
                         </div>
                         <div className="name-space">
                             <div className="name-wd" >
                                 State:
         </div >
-                            <div class="ui input"><input type="email" placeholder="State" /></div>
+                            <div className="ui input"><input type="text"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.state}
+                            placeholder="State" /></div>
                         </div>
                         <div className="name-space">
                             <div className="name-wd">
                                 Country:
         </div >
-                            <div class="ui input"><input type="text" placeholder=" Country" /></div>
+                            <div className="ui input"><input type="text"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.permanentAddr.country}
+                            placeholder=" Country" /></div>
                         </div>
                     </Col>
                 </Row>
@@ -158,48 +228,67 @@ export default class Mortgage extends React.Component {
                                     <div className="name-wd" >
                                         FirstName:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder="firstName" /></div>
+                                    <div className="ui input"><input type="text" name="fname" onChange = {(e)=>this.handleOnChange(e)}value={this.state.mortgageInfo.fName} placeholder="firstName" /></div>
                                 </div>
 
                                 <div className="name-space">
                                     <div className="name-wd">
                                         LastName:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder="lastName" /></div>
+                                    <div className="ui input"><input type="text" 
+                                    name="lname" onChange = {(e)=>this.handleOnChange(e)}value={this.state.mortgageInfo.lName}
+                                    placeholder="lastName" /></div>
                                 </div>
                                 <div className="name-space">
                                     <div className="name-wd">
                                         Age:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder="age" /></div>
+                                    <div className="ui input"><input type="number"
+                                    name="age" onChange = {(e)=>this.handleOnChange(e)} value={this.state.mortgageInfo.age}
+                                    placeholder="age" /></div>
                                 </div>
                             </Col></Row>
 
-
                         <Row >
                             <Col className="same-row">
-                                <div className="name-space">
+                                {/* <div className="name-space">
                                     <div className="name-wd" >
                                         Email:
                             </div >
-                                    <div class="ui input"><input type="email" placeholder="email" /></div>
-                                </div>
+                            <div className="ui input"><input type="text"
+                                     name="email"
+                                     onChange = {(e)=>this.handleOnChange(e)} 
+                                     value = {this.state.mortgageInfo.emailId}
+                                    placeholder="email" />
+                                    </div>
+                                   
+                                </div> */}
                                 <div className="name-space">
                                     <div className="name-wd" >
                                         Gender:
                             </div >
-                                    <Dropdown
-                                        placeholder='Select gender'
-
-                                        selection
-                                        options={friendOptions}
-                                    />
+                            <Dropdown
+                                onChange={this.handleGender}
+                                options={options}
+                                placeholder='Choose an option'
+                                selection
+                                value={value}
+                            />
+                                
                                 </div>
                                 <div className="name-space">
                                     <div className="name-wd">
                                         MobileNo:
                             </div >
-                                    <div class="ui input"><input type="number" placeholder=" MobileNo" /></div>
+                                    <div className="ui input"><input type="number"
+                                    name="mobileNo" onChange = {(e)=>this.handleOnChange(e)}value={this.state.mortgageInfo.mobileNo} placeholder=" MobileNo" /></div>
+                                </div>
+                                <div className="name-space">
+                                    <div className="name-wd">
+                                        Email:
+                            </div >
+                                    <div className="ui input"><input type="text"
+                                    name="alter1" onChange = {(e)=>this.handleOnChange(e)}value={this.state.mortgageInfo.alter1} placeholder=" email" /></div>
                                 </div>
                             </Col>
                         </Row>
@@ -221,53 +310,61 @@ export default class Mortgage extends React.Component {
                         </p>
                         </div>
                         <Row >
-                            <Col className="same-row">
-                                <div className="name-space">
-                                    <div className="name-wd" >
-                                        Address line 1:
-                            </div >
-                                    <div class="ui input"><input type="text" placeholder="Address line 1" /></div>
-                                </div>
+                    <Col className="same-row">
+                        <div className="name-space">
+                            <div className="name-wd" >
+                                Address line 1:
+        </div >
+                            <div className="ui input"><input type="text"name='line1' onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.aline1} placeholder="Address line 1" /></div>
+                        </div>
 
-                                <div className="name-space">
-                                    <div className="name-wd">
-                                        Address line 2:
-                            </div >
-                                    <div class="ui input"><input type="text" placeholder="Address line 2" /></div>
-                                </div>
-                                <div className="name-space">
-                                    <div className="name-wd">
-                                        LandMark:
-                            </div >
-                                    <div class="ui input"><input type="text" placeholder="LandMark" /></div>
-                                </div>
-                            </Col></Row>
+                        <div className="name-space">
+                            <div className="name-wd">
+                                Address line 2:
+        </div >
+                            <div className="ui input"><input type="text" name='line2' onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.aline2}  placeholder="Address line 2" /></div>
+                        </div>
+                        <div className="name-space">
+                            <div className="name-wd">
+                                LandMark:
+        </div >
+                            <div className="ui input"><input type="text" name='landmark'
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.landmark}
+                            placeholder="LandMark" /></div>
+                        </div>
+                    </Col></Row>
 
 
-                        <Row >
-                            <Col className="same-row">
-                                <div className="name-space">
-                                    <div className="name-wd" >
-                                        City:
-                            </div >
-                                    <div class="ui input"><input type="email" placeholder="City" /></div>
-                                </div>
-                                <div className="name-space">
-                                    <div className="name-wd" >
-                                        State:
-                            </div >
-                                    <div class="ui input"><input type="email" placeholder="State" /></div>
-                                </div>
-                                <div className="name-space">
-                                    <div className="name-wd">
-                                        Country:
-                            </div >
-                                    <div class="ui input"><input type="text" placeholder=" Country" /></div>
-                                </div>
-                            </Col>
-                        </Row>
+                <Row >
+                    <Col className="same-row">
+                        <div className="name-space"> 
+                            <div className="name-wd" >
+                                City:
+        </div >
+                            <div className="ui input"><input type="text" name="city"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.city}
+                            placeholder="City" /></div>
+                        </div>
+                        <div className="name-space">
+                            <div className="name-wd" >
+                                State:
+        </div >
+                            <div className="ui input"><input type="text"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.state}
+                            placeholder="State" /></div>
+                        </div>
+                        <div className="name-space">
+                            <div className="name-wd">
+                                Country:
+        </div >
+                            <div className="ui input"><input type="text"
+                             onChange = {(e)=>this.handleOnChange(e)}value={this.state.Address.currentAddr.country}
+                            placeholder=" Country" /></div>
+                        </div>
+                    </Col>
+                </Row>
                         <div className="ui checkbox">
-                            <input type="checkbox" readonly="" tabindex="0" value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
+                            <input type="checkbox" readonly="" tabindex="0" onChange = {(e)=>this.handleOnChange(e)}value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
                             <label>Permanent address is as same as current address</label>
                         </div>
 
@@ -302,13 +399,13 @@ export default class Mortgage extends React.Component {
                                     <div className="name-wd">
                                         Income:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder="Annual Income" /></div>
+                                    <div className="ui input"><input type="text" placeholder="Annual Income" /></div>
                                 </div>
                                 <div className="name-space">
                                     <div className="name-wd">
                                         Organisation:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder="Organisation" /></div>
+                                    <div className="ui input"><input type="text" placeholder="Organisation" /></div>
                                 </div>
                             </Col></Row>
                     </Accordion.Content>
@@ -332,7 +429,7 @@ export default class Mortgage extends React.Component {
                             </div >
                                     <Dropdown
                                         placeholder='Select Type'
-
+                                         
                                         selection
                                         options={AssetType}
                                     />
@@ -342,13 +439,17 @@ export default class Mortgage extends React.Component {
                                     <div className="name-wd">
                                         Asset Value:
                             </div >
-                                    <div class="ui input"><input type="text" placeholder=" asset value" /></div>
+                                    <div className="ui input"><input type="text"
+                                    //  name="AssetValue" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.assetValue}
+                                    placeholder=" asset value" /></div>
                                 </div>
                                 <div className="name-space">
                                     <div className="name-wd">
                                         asset Doc:
                             </div >
-                                    <div class="ui input"><input type="file" placeholder="upload" accept=".doc,.pdf" /></div>
+                                    <div className="ui input"><input type="file"
+                                    //  name="doc" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.doc}
+                                    placeholder="upload" accept=".doc,.pdf" /></div>
                                 </div>
                             </Col></Row>
                     </Accordion.Content>
