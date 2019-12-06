@@ -11,8 +11,8 @@ export default class Header extends React.Component {
     render() {
         return (
             <div>
-                <Navbar bg="primary" variant="dark" expand="lg">
-                    <Navbar.Brand href="#home">Mortgage Loan</Navbar.Brand>
+                <Navbar bg="secondary" variant="dark" expand="lg">
+                    <Navbar.Brand href="/">Mortgage Loan</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav" className="left-spacing"  >
                         <Nav className="mr-auto">
@@ -31,7 +31,7 @@ export default class Header extends React.Component {
                         </Nav>
 
                         <Form inline className="loginBtn">
-                            <Button className="mr-sm-2" variant="outline-dark" >LogIn </Button>
+                            <Button className="mr-sm-2" variant="outline-light" >LogIn </Button>
 
                         </Form>
                     </Navbar.Collapse>

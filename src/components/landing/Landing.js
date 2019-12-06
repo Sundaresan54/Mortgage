@@ -18,7 +18,7 @@ class Landing extends React.Component {
     }
     render() {
         return (
-            <div>
+            <div style={{ backgroundColor: "#f5f6fa", paddingBottom: '80px' }}>
                 <div className='row main-content' style={{ backgroundColor: "#f5f6fa", height: 'fit-content' }}>
                     <div className='col-12' >
                         <Row className="heading">
@@ -103,7 +103,7 @@ class Landing extends React.Component {
                             </Col>
                         </Row>
                         <div>
-                            <Button style={{ float: 'right', marginRight: '35px' }} onClick={() => this.handleClick()}>Proceed</Button>
+                            <Button style={{ float: 'right', marginRight: '35px', backgroundColor: 'green', borderColor: 'green' }} onClick={() => this.handleClick()}>Continue</Button>
 
                         </div>
 
