@@ -11,16 +11,18 @@ export default class Header extends React.Component {
     render() {
         return (
             <div>
-                <Navbar bg="secondary" variant="dark" expand="lg">
+                <Navbar bg="primary" variant="dark" expand="lg">
                     <Navbar.Brand href="/">Mortgage Loan</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav" className="left-spacing"  >
-                        <Nav className="mr-auto">
-                            <Nav.Link className='space' href="#home">Home</Nav.Link>
-                            <Nav.Link className='space' href="#link">Services</Nav.Link>
-                            <Nav.Link className='space' href="#link">Tax</Nav.Link>
-                            <Nav.Link className='space' href="#link">About</Nav.Link>
-                            <Nav.Link className='space' href="#link">ContactUs</Nav.Link>
+                        <Form inline style={{ marginLeft: '200px' }}>
+                            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                            <Button variant="outline-light">Search</Button>
+                        </Form>
+                        <Nav className="ml-auto">
+
+                            <Nav.Link href="#link">Services</Nav.Link>
+                            <Nav.Link href="#link">Contact</Nav.Link>
                             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>

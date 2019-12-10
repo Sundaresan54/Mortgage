@@ -2,54 +2,35 @@ import React from 'react';
 
 import { withRouter } from 'react-router'
 
-import { Accordion, Icon, Dropdown, Input, Table } from 'semantic-ui-react'
+import { Accordion, Icon, Dropdown, Input, Table, Radio } from 'semantic-ui-react'
 import { Paper } from '@material-ui/core'
-import { Row, Col, Button } from 'react-bootstrap'
+import { Row, Col, Button, } from 'react-bootstrap'
 import './style.css';
 
 class Mortgage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            ifLiability: false,
+            radio: '',
             tab: false,
             activeIndex: 0,
             sameAddr: false,
-            mortgageInfo: {
-                fname: '',
-                lname: '',
-                age: undefined,
-                gender: '',
-                mobno: '',
-                alter1: ''
+            user: {},
+            address: {
+                currentAddress: {},
+                permanentAddress: {}
             },
+            annualIncome: '',
+            liability: {},
             expLoan: '',
             asset: [{
                 assetType: "",
                 assetValue: '',
                 doc: ''
             }],
-            Address: {
-                permanentAddr: {
-                    aline1: '',
-                    aline2: '',
-                    landmark: '',
-                    city: '',
-                    state: '',
-                    country: ''
-                },
-                currentAddr: {
-                    aline1: '',
-                    aline2: '',
-                    landmark: '',
-                    city: '',
-                    state: '',
-                    country: ''
-                }
-            },
             finacialDetails: {
-                employee: '',
-                income: '',
-                company: ''
+
             },
 
 
@@ -67,18 +48,27 @@ class Mortgage extends React.Component {
     }
 
     handleCheckBox() {
+        let sameAddr = this.state.user.Address;
+
+        console.log("---->", sameAddr)
         this.setState({
             sameAddr: !this.state.sameAddr
         }
         )
+
     }
     handleOnChange(e) {
-        let mortgageInfo = this.state.mortgageInfo;
-        mortgageInfo[e.target.name] = e.target.value
+        let user = this.state.user;
+        user[e.target.name] = e.target.value
+        this.setState({
+            user: user
+        })
         // if(e.target.name==="email"){
-        //     mortgageInfo["emailId"] = e.target.value
-        // }
-        console.log(mortgageInfo, "hgello")
+        //     user["emailId"] = e.target.value
+        // }this.setState
+
+
+        console.log(this.state.user, "jgsjhsg", "hgello")
         console.log("inside");
 
 
@@ -95,19 +85,100 @@ class Mortgage extends React.Component {
 
     handleGender = (e, { value }) => {
         console.log(value);
-        this.setState({ gender: value }, () => {
-            console.log("gender", this.state.gender)
+        let details = { ...this.state.user, gender: value }
+        console.log(details)
+        this.setState({ user: details }, () => {
+
         })
 
     }
+    handleOccup = (e, { value }) => {
+        let details = { ...this.state.user, occupation: value }
+        console.log(details)
+        this.setState({ user: details }, () => {
 
+        })
+
+    }
     addAsset = () => {
         this.setState({ tab: true })
 
         console.log("icon clicked");
     }
+
+    handleLiability = (e) => {
+        this.setState({
+            ifLiability: !this.state.ifLiability
+        })
+    }
+
+    handleRadio = (e, { value }) => {
+        this.setState({
+            value,
+            radio: value
+        }, () => {
+            console.log(this.state.radio, "radioooo")
+        })
+
+    }
+    handleCtAddress = (e) => {
+
+        let addr = { ...this.state.address.currentAddress };
+        console.log('Address : ', addr);
+        addr[e.target.name] = e.target.value;
+
+        console.log('Address2 : ', addr)
+        this.setState({
+            address: { ...this.state.address, currentAddress: addr },
+            user: { ...this.state.user, Address: { ...this.state.address, currentAddress: addr } }
+
+        }, console.log('---', this.state.address, ">>>>>>>>", this.state.user))
+    }
+    handlePtAddress = (e) => {
+
+        let addr = { ...this.state.address.permanentAddress };
+        addr[e.target.name] = e.target.value;
+        this.setState({
+            address: { ...this.state.address, permanentAddress: addr },
+            user: { ...this.state.user, Address: { ...this.state.address, permanentAddress: addr } }
+
+        }, console.log('---', this.state.address, ">>>>>>>>", this.state.user))
+
+
+
+    }
+    handleIncome = (e) => {
+        this.setState({
+            annualIncome: e.target.value
+        })
+        console.log("annual", this.state.annualIncome)
+    }
+
+
+    handleLiabilityType = (e, { value }) => {
+        let data = { ...this.state.liability, liabilityType: value };
+        this.setState({
+            liability: data
+        })
+
+    }
+    handleOnLiability = (e) => {
+        console.log("........", e.target.value)
+        let liability = { ...this.state.liability };
+        console.log(liability, "///////////jjjjjj")
+        liability[e.target.name] = e.target.value;
+        this.setState({
+            liability: liability,
+            // user: { ...this.state.user, ...this.state.liability,lib}
+        })
+        console.log(this.state.liability)
+    }
+
     render() {
         const { activeIndex, value } = this.state
+        console.log(this.state.user, "fullll")
+        console.log(this.state.liability, "liiiii")
+
         const options = [
             {
                 key: 'Male',
@@ -158,7 +229,18 @@ class Mortgage extends React.Component {
 
 
         ]
-
+        const LibType = [
+            {
+                key: 'Gold loan',
+                text: 'Gold loan',
+                value: 'Gold loan'
+            },
+            {
+                key: 'property Morgaged',
+                text: 'property Morgaged',
+                value: 'property Morgaged'
+            },
+        ]
 
         let PermanentData = (
             <div>
@@ -168,21 +250,26 @@ class Mortgage extends React.Component {
                             <div className="name-wd" >
                                 Address line 1:
         </div >
-                            <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleOnChange(e)} placeholder="Address line 1" /></div>
+                            <div className="ui input"><input type="text" name='ptline1' onChange={(e) => this.handlePtAddress(e)}
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline1 : ''}
+                                placeholder="Address line 1" /></div>
                         </div>
 
                         <div className="name-space">
                             <div className="name-wd">
                                 Address line 2:
         </div >
-                            <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleOnChange(e)} placeholder="Address line 2" /></div>
+                            <div className="ui input"><input type="text" name='ptline2' onChange={(e) => this.handlePtAddress(e)}
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline2 : ''}
+                                placeholder="Address line 2" /></div>
                         </div>
                         <div className="name-space">
                             <div className="name-wd">
                                 LandMark:
         </div >
-                            <div className="ui input"><input type="text" name='landmark'
-                                onChange={(e) => this.handleOnChange(e)}
+                            <div className="ui input"><input type="text" name='ptlandmark'
+                                onChange={(e) => this.handlePtAddress(e)}
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptlandmark : ''}
                                 placeholder="LandMark" /></div>
                         </div>
                     </Col></Row>
@@ -194,8 +281,9 @@ class Mortgage extends React.Component {
                             <div className="name-wd" >
                                 City:
         </div >
-                            <div className="ui input"><input type="text" name="city"
-                                onChange={(e) => this.handleOnChange(e)}
+                            <div className="ui input"><input type="text" name="ptcity"
+                                onChange={(e) => this.handlePtAddress(e)}
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcity : ''}
                                 placeholder="City" /></div>
                         </div>
                         <div className="name-space">
@@ -203,7 +291,10 @@ class Mortgage extends React.Component {
                                 State:
         </div >
                             <div className="ui input"><input type="text"
-                                onChange={(e) => this.handleOnChange(e)}
+                                onChange={(e) => this.handlePtAddress(e)}
+
+                                name="ptstate"
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptstate : ''}
                                 placeholder="State" /></div>
                         </div>
                         <div className="name-space">
@@ -211,7 +302,9 @@ class Mortgage extends React.Component {
                                 Country:
         </div >
                             <div className="ui input"><input type="text"
-                                onChange={(e) => this.handleOnChange(e)}
+                                onChange={(e) => this.handlePtAddress(e)}
+                                name="ptcountry"
+                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcountry : ''}
                                 placeholder=" Country" /></div>
                         </div>
                     </Col>
@@ -259,6 +352,52 @@ class Mortgage extends React.Component {
             </div>
         )
 
+        let liability = (
+            <div style={{ display: 'flex' }}>
+                <div className="name-space">
+                    <div className="name-wd" >
+                        LiabilityType:
+                            </div >
+                    <Dropdown style={{ height: '20px' }}
+                        placeholder='Select Type'
+                        onChange={this.handleLiabilityType}
+                        selection
+                        options={LibType}
+                        value={value}
+                    />
+                </div>
+
+                <div className="name-space">
+                    <div className="name-wd" style={{ marginTop: '-1px' }}>
+                        Remaining
+                        Value:
+                            </div >
+                    <div className="ui input" ><input type="text" style={{ height: '38px' }}
+                        name="AssetValue"
+                        onChange={(e) => this.handleOnLiability(e)}
+                        // value={this.state.Asset.assetValue}
+                        placeholder=" RemainingValue" /></div>
+                </div>
+                <div className="name-space">
+                    <div className="name-wd" style={{ marginTop: '-1px' }}>
+                        Remaining
+                        Tenure:
+                        (months)
+                            </div >
+                    <div className="ui input" ><input type="text" style={{ height: '38px' }}
+                        name="AssetTenure"
+                        onChange={(e) => this.handleOnLiability(e)}
+                        // value={this.state.Asset.assetValue}
+                        placeholder=" RemainingValue" /></div>
+
+
+                </div>
+
+                <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} />
+
+            </div>
+        )
+
 
         return (
             <div className="head-m" style={{ backgroundColor: '#f5f6fa', paddingBottom: '45px' }}>
@@ -284,7 +423,7 @@ class Mortgage extends React.Component {
                                         <div className="name-wd" >
                                             FirstName:
                             </div >
-                                        <div className="ui input"><input type="text" name="fname" onChange={(e) => this.handleOnChange(e)} value={this.state.mortgageInfo.fName} placeholder="firstName" /></div>
+                                        <div className="ui input"><input type="text" name="fname" onChange={(e) => this.handleOnChange(e)} placeholder="firstName" value={this.state.user.fname && this.state.user.fname} /></div>
                                     </div>
 
                                     <div className="name-space">
@@ -292,18 +431,51 @@ class Mortgage extends React.Component {
                                             LastName:
                             </div >
                                         <div className="ui input"><input type="text"
-                                            name="lname" onChange={(e) => this.handleOnChange(e)} value={this.state.mortgageInfo.lName}
+                                            name="lname" onChange={(e) => this.handleOnChange(e)}
+                                            value={this.state.user.lname && this.state.user.lname}
                                             placeholder="lastName" /></div>
+                                    </div>
+
+
+                                    <div className="name-space">
+                                        <div className="name-wd">
+                                            FatherName:
+                            </div >
+                                        <div className="ui input"><input type="text"
+                                            name="faName" onChange={(e) => this.handleOnChange(e)}
+                                            value={this.state.user.faname && this.state.user.faname}
+                                            placeholder="Father Name" /></div>
+                                    </div>
+
+                                </Col></Row>
+
+                            <Row >
+                                <Col className="same-row">
+                                    <div className="name-space">
+                                        <div className="name-wd">
+                                            DOB:
+                            </div >
+                                        <div className="ui input"><input type="date"
+                                            name="age" onBlur={(e) => this.handleOnChange(e)} value={this.state.user.age}
+
+                                            placeholder="age" /></div>
                                     </div>
                                     <div className="name-space">
                                         <div className="name-wd">
-                                            Age:
+                                            MobileNo:
                             </div >
                                         <div className="ui input"><input type="number"
-                                            name="age" onChange={(e) => this.handleOnChange(e)} value={this.state.mortgageInfo.age}
-                                            placeholder="age" /></div>
+                                            name="mobileNo" onChange={(e) => this.handleOnChange(e)} value={this.state.user.mobileNo} placeholder=" MobileNo" /></div>
                                     </div>
-                                </Col></Row>
+                                    <div className="name-space">
+                                        <div className="name-wd">
+                                            Email:
+                            </div >
+                                        <div className="ui input"><input type="text"
+                                            name="emailId" onChange={(e) => this.handleOnChange(e)} value={this.state.user.emailId} placeholder=" email" /></div>
+                                    </div>
+                                </Col>
+                            </Row>
 
                             <Row >
                                 <Col className="same-row">
@@ -314,7 +486,7 @@ class Mortgage extends React.Component {
                                         <Dropdown
                                             onChange={this.handleGender}
                                             options={options}
-                                            placeholder='Choose an option'
+                                            placeholder='select'
                                             selection
                                             value={value}
                                         />
@@ -322,18 +494,50 @@ class Mortgage extends React.Component {
                                     </div>
                                     <div className="name-space">
                                         <div className="name-wd">
-                                            MobileNo:
+                                            PanNo:
                             </div >
-                                        <div className="ui input"><input type="number"
-                                            name="mobileNo" onChange={(e) => this.handleOnChange(e)} value={this.state.mortgageInfo.mobileNo} placeholder=" MobileNo" /></div>
+                                        <div className="ui input"><input type="text"
+                                            name="panNo:" onChange={(e) => this.handleOnChange(e)} placeholder=" PanNo:"
+                                            value={this.state.user.panNo}
+                                        /></div>
                                     </div>
                                     <div className="name-space">
                                         <div className="name-wd">
-                                            Email:
+                                            AadharNo:
                             </div >
                                         <div className="ui input"><input type="text"
-                                            name="email" onChange={(e) => this.handleOnChange(e)} value={this.state.mortgageInfo.emailId} placeholder=" email" /></div>
+                                            name="AadharNo" onChange={(e) => this.handleOnChange(e)} placeholder=" AadharNo"
+                                            value={this.state.user.AadharNo}
+                                        /></div>
                                     </div>
+                                </Col>
+                            </Row>
+                            <Row >
+                                <Col className="same-row">
+                                    <div className="name-space">
+                                        <div className="name-wd" >
+                                            Occupation:
+                            </div >
+                                        <Dropdown
+                                            onChange={this.handleOccup}
+                                            options={employee}
+                                            placeholder='Choose an option'
+                                            selection
+                                            value={value}
+                                        />
+
+                                    </div>
+                                    <div className="name-space" style={{ marginLeft: '58px' }}>
+                                        <div className="name-wd">
+                                            Company:
+                                            </div >
+                                        <div className="ui input" ><input type="text"
+                                            name="company:" onChange={(e) => this.handleOnChange(e)} placeholder=" company"
+                                            value={this.state.user.company}
+                                        />
+                                        </div>
+                                    </div>
+
                                 </Col>
                             </Row>
                         </Accordion.Content>
@@ -359,21 +563,26 @@ class Mortgage extends React.Component {
                                         <div className="name-wd" >
                                             Address line 1:
         </div >
-                                        <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleOnChange(e)} value={this.state.Address.currentAddr.aline1} placeholder="Address line 1" /></div>
+                                        <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleCtAddress(e)} value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line1 : ''} placeholder="Address line 1" /></div>
                                     </div>
 
                                     <div className="name-space">
                                         <div className="name-wd">
                                             Address line 2:
         </div >
-                                        <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleOnChange(e)} placeholder="Address line 2" /></div>
+                                        <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleCtAddress(e)}
+                                            // value={this.state.user.Address.line2}
+                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line2 : ''}
+                                            placeholder="Address line 2" /></div>
                                     </div>
                                     <div className="name-space">
                                         <div className="name-wd">
                                             LandMark:
         </div >
                                         <div className="ui input"><input type="text" name='landmark'
-                                            onChange={(e) => this.handleOnChange(e)}
+                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.landmark : ''}
+                                            // value={this.state.user.Address.landmark}
+                                            onChange={(e) => this.handleCtAddress(e)}
                                             placeholder="LandMark" /></div>
                                     </div>
                                 </Col></Row>
@@ -386,7 +595,9 @@ class Mortgage extends React.Component {
                                             City:
         </div >
                                         <div className="ui input"><input type="text" name="city"
-                                            onChange={(e) => this.handleOnChange(e)}
+                                            onChange={(e) => this.handleCtAddress(e)}
+                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.city : ''}
+                                            // value={this.state.user.Address.city}
                                             placeholder="City" /></div>
                                     </div>
                                     <div className="name-space">
@@ -394,7 +605,10 @@ class Mortgage extends React.Component {
                                             State:
         </div >
                                         <div className="ui input"><input type="text"
-                                            onChange={(e) => this.handleOnChange(e)}
+                                            onChange={(e) => this.handleCtAddress(e)}
+                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.state : ''}
+                                            // value={this.state.user.Address.state}
+                                            name="state"
                                             placeholder="State" /></div>
                                     </div>
                                     <div className="name-space">
@@ -402,13 +616,16 @@ class Mortgage extends React.Component {
                                             Country:
         </div >
                                         <div className="ui input"><input type="text"
-                                            onChange={(e) => this.handleOnChange(e)}
+                                            name="country"
+                                            onChange={(e) => this.handleCtAddress(e)}
+                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.country : ''}
+                                            // value={this.state.user.Address.country}
                                             placeholder=" Country" /></div>
                                     </div>
                                 </Col>
                             </Row>
                             <div className="ui checkbox top-align" >
-                                <input type="checkbox" tabIndex="0" onChange={(e) => this.handleOnChange(e)} value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
+                                <input type="checkbox" tabIndex="0" value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
                                 <label>Permanent address is as same as current address</label>
                             </div>
 
@@ -427,31 +644,44 @@ class Mortgage extends React.Component {
                         <Accordion.Content active={activeIndex === 2}>
                             <Row >
                                 <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            Employee:
-                            </div >
-                                        <Dropdown
-                                            placeholder='Select Type'
 
-                                            selection
-                                            options={employee}
-                                        />
-                                    </div>
-
-                                    <div className="name-space">
+                                    <div className="name-space" style={{ marginBottom: '15px' }}>
                                         <div className="name-wd">
                                             Income:
-                            </div >
-                                        <div className="ui input"><input type="text" placeholder="Annual Income" /></div>
+                                         </div >
+                                        <div className="ui input"><input type="text" placeholder="Annual Income" onChange={(e) => this.handleIncome(e)} /></div>
                                     </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            Company:
-                            </div >
-                                        <div className="ui input"><input type="text" placeholder="company" /></div>
-                                    </div>
+
+
                                 </Col></Row>
+                            <Row>
+                                <Col>
+                                    <div style={{ display: 'flex' }}>
+                                        <div className="ui checkbox top-align" >
+                                            <input type="checkbox" tabIndex="0" value={this.state.ifLiability} onChange={() => this.handleLiability()} />
+                                            <label>If any Liabilities:</label>
+                                        </div>
+                                        <div style={{ marginTop: '-5px' }}>
+                                            {this.state.ifLiability && <div className="name-space">
+                                                <div className="name-wd">
+                                                    BankName:
+                                         </div >
+                                                <div className="ui input"><input type="text" name="bankName"
+                                                    onChange={(e) => this.handleOnLiability(e)}
+                                                    placeholder="Bank Name" /></div>
+                                            </div>}
+                                        </div>
+                                    </div>
+
+
+
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col style={{ marginTop: '10px' }}>
+                                    {this.state.ifLiability && liability}
+                                </Col>
+                            </Row>
                         </Accordion.Content>
                     </Accordion>
 
@@ -467,39 +697,42 @@ class Mortgage extends React.Component {
                         <Accordion.Content active={activeIndex === 3}>
                             <Row >
                                 <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            AssetType:
+                                    <form className='same-row'>
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                AssetType:
                             </div >
-                                        <Dropdown
-                                            placeholder='Select Type'
+                                            <Dropdown
+                                                placeholder='Select Type'
 
-                                            selection
-                                            options={AssetType}
-                                        />
-                                    </div>
+                                                selection
+                                                options={AssetType}
+                                            />
+                                        </div>
 
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            AssetValue:
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                AssetValue:
                             </div >
-                                        <div className="ui input"><input type="text"
-                                            //  name="AssetValue" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.assetValue}
-                                            placeholder=" asset value" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            Doc:(less than 10MB)
+                                            <div className="ui input"><input type="text"
+                                                //  name="AssetValue" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.assetValue}
+                                                placeholder=" asset value" /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                Doc:(less than 10MB)
 
                             </div >
-                                        <div className="ui input btn-style"><input className="btn-style" style={{ border: '0' }} type="file" name="upload"
-                                            //  name="doc" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.doc}
-                                            placeholder="upload" accept=".doc,.pdf" /></div>
+                                            <div className="ui input btn-style"><input className="btn-style" style={{ border: '0' }} type="file" name="upload"
+                                                //  name="doc" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.doc}
+                                                placeholder="upload" accept=".doc,.pdf" multiple /></div>
 
 
-                                    </div>
+                                        </div>
 
-                                    <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} />
+                                        <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} />
+
+                                    </form>
 
 
                                 </Col></Row>
@@ -523,7 +756,7 @@ class Mortgage extends React.Component {
                         <Accordion.Content active={activeIndex === 4}>
                             <Row >
                                 <Col className="same-row">
-                                    <div className="name-space">
+                                    <div className="name-spaced">
                                         <div className="name-wd" >
                                             Principle:
                             </div >
@@ -531,14 +764,41 @@ class Mortgage extends React.Component {
 
                                     </div>
 
-                                    <div className="name-space">
+                                    <div className="name-spaced">
                                         <div className="name-wd">
                                             Tenure:
                                             (months)
                             </div >
                                         <div className="ui input"><input type="text" placeholder="Tenure" /></div>
                                     </div>
-                                </Col></Row>
+                                    <div className="name-spaced">
+                                        <div className="name-wd">
+                                            Interest(%):
+
+                            </div >
+                                        <div className="ui input"><input type="text" placeholder="Interest" /></div>
+                                    </div>
+                                    <div >
+                                        <Radio
+                                            label='flexable'
+                                            name='flexable'
+                                            value='flexable'
+                                            checked={this.state.value === 'flexable'}
+                                            onChange={this.handleRadio}
+                                            className='radio-space'
+                                        />
+                                        <Radio
+                                            label='fixed'
+                                            name='fixed'
+                                            value='fixed'
+                                            checked={this.state.value === 'fixed'}
+                                            onChange={this.handleRadio}
+                                        />
+                                    </div>
+
+
+                                </Col>
+                            </Row>
                         </Accordion.Content>
                     </Accordion>
                     <Row>

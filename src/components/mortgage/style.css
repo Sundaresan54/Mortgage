@@ -6,14 +6,24 @@
 .same-row{
     display: flex;
 }
+.radio-space{
+    margin-right: 5px;
+    margin-top: 5px
+}
 .name-space{
     width: 300px;
     display: flex;
     margin-top: 10px;
-    margin-left: 70px;
+    margin-left: 40px;
+}
+.name-spaced{
+    width: 300px;
+    display: flex;
+    margin-top: 10px;
+    margin-left: 5px;
 }
 .name-wd{
-    width: 75px;  
+    width: 90px;  
     margin-top: 10px;
 }
 .space-checkbox{
@@ -34,6 +44,7 @@ margin-top: 5px
 
 .top-align{
     margin-top: 15px;
+    display:flex;
 }
 
 
