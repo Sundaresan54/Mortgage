@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withRouter } from 'react-router'
 
-import { Accordion, Icon, Dropdown, Input, Table, Radio } from 'semantic-ui-react'
+import { Accordion, Icon, Dropdown, Table, Radio, Select, Modal } from 'semantic-ui-react'
 import { Paper } from '@material-ui/core'
 import { Row, Col, Button, } from 'react-bootstrap'
 import './style.css';
@@ -12,6 +12,7 @@ class Mortgage extends React.Component {
         super(props);
         this.state = {
             ifLiability: false,
+            tabOpen: false,
             radio: '',
             tab: false,
             activeIndex: 0,
@@ -23,22 +24,23 @@ class Mortgage extends React.Component {
             },
             annualIncome: '',
             liability: {},
-            expLoan: '',
-            asset: [{
-                assetType: "",
-                assetValue: '',
-                doc: ''
-            }],
-            finacialDetails: {
-
-            },
-
-
+            expLoan: {},
+            financial: [],
+            upload: {},
+            open: false
 
         }
 
     }
 
+
+
+    show = () => {
+        console.log("hello1212")
+        this.setState({ open: true })
+        console.log("hello")
+    }
+    close = () => this.setState({ open: false })
     handleClick = (e, titleProps) => {
         const { index } = titleProps
         const { activeIndex } = this.state
@@ -63,15 +65,6 @@ class Mortgage extends React.Component {
         this.setState({
             user: user
         })
-        // if(e.target.name==="email"){
-        //     user["emailId"] = e.target.value
-        // }this.setState
-
-
-        console.log(this.state.user, "jgsjhsg", "hgello")
-        console.log("inside");
-
-
     }
 
     handleProceed() {
@@ -101,7 +94,7 @@ class Mortgage extends React.Component {
 
     }
     addAsset = () => {
-        this.setState({ tab: true })
+        this.setState({ tab: true, open: false })
 
         console.log("icon clicked");
     }
@@ -116,10 +109,7 @@ class Mortgage extends React.Component {
         this.setState({
             value,
             radio: value
-        }, () => {
-            console.log(this.state.radio, "radioooo")
         })
-
     }
     handleCtAddress = (e) => {
 
@@ -171,14 +161,60 @@ class Mortgage extends React.Component {
             liability: liability,
             // user: { ...this.state.user, ...this.state.liability,lib}
         })
-        console.log(this.state.liability)
+        console.log(this.state.liability, )
+    }
+
+    addLiability = () => {
+
+        let financial = this.state.financial
+        financial.push({ ...this.state.liability });
+        console.log('-----', financial)
+        this.inputTitle.value = "";
+        this.inputTenure.value = "";
+        // this.inputType.selected = false;
+        this.inputBank.value = "";
+
+        this.setState({
+            financial: financial,
+            liability: {},
+            tabOpen: true
+        })
+
+        console.log("..........", this.state.financial)
+    }
+
+    handleLoan = (e) => {
+        let expLoan = this.state.expLoan
+        expLoan[e.target.name] = e.target.value;
+        this.setState({
+            expLoan: expLoan
+        })
+        console.log(",.,.,.,.,.,.,.", this.state.expLoan)
+    }
+
+    handleUpload = (e) => {
+        this.setState({
+            upload: e.target.files[0]
+        })
+    }
+    handleDoc1 = (e) => {
+        this.setState({
+            upload: e.target.files[0]
+        })
+    }
+    handleDoc2 = (e) => {
+        this.setState({
+            upload: e.target.files[0]
+        })
     }
 
     render() {
-        const { activeIndex, value } = this.state
-        console.log(this.state.user, "fullll")
-        console.log(this.state.liability, "liiiii")
-
+        const { activeIndex, value, open } = this.state
+        console.log(this.state.upload, " file upload")
+        console.log("..........", this.state.financial, "Finance", this.state.liability, "Liability")
+        console.log("value", this.state.liability.AssetValue)
+        console.log("exp loan", this.state.expLoan)
+        console.log(this.state.radio, "radioooo")
         const options = [
             {
                 key: 'Male',
@@ -241,7 +277,80 @@ class Mortgage extends React.Component {
                 value: 'property Morgaged'
             },
         ]
+        let lib = (
 
+            <div style={{ marginTop: '10px' }}>
+                <Table striped>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>BankName</Table.HeaderCell>
+                            <Table.HeaderCell>liabilityType</Table.HeaderCell>
+                            <Table.HeaderCell>RemaningValue</Table.HeaderCell>
+                            <Table.HeaderCell>RemaningTenure</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {this.state.financial.map((financial) => {
+                            return < Table.Row key={financial} >
+                                <Table.Cell>{financial.bankName}</Table.Cell>
+                                <Table.Cell>{financial.liabilityType}</Table.Cell>
+                                <Table.Cell> £ {financial.AssetValue}</Table.Cell>
+                                <Table.Cell>{financial.AssetTenure}</Table.Cell>
+
+
+                            </Table.Row>
+
+                        })
+                        }
+
+
+
+                    </Table.Body>
+                </Table>
+            </div>
+
+        )
+        let modal = (
+            <div >
+                <Modal size='tiny' open={open} onClose={this.close} closeIcon className="modalEdit" style={{ marginTop: '150px', marginLeft: '30%' }}>
+                    <Modal.Header>Please Upload Required Document</Modal.Header>
+                    <Modal.Content>
+                        <div className="name-space">
+                            <div className="name-wd" >
+                                MorgagedDoc:
+                            </div >
+                            <div className="ui input"><input type="file" name="morgageDoc" style={{ border: '0px', marginLeft: '12px' }}
+                                onChange={(e) => this.handleUpload(e)}
+
+                            /></div>
+                        </div>
+                        <div className="name-space">
+                            <div className="name-wd" >
+                                Document2:
+                            </div >
+                            <div className="ui input"><input type="file" name="document2" style={{ border: '0px', marginLeft: '25px' }}
+                                onChange={(e) => this.handleDoc1(e)}
+
+                            /></div>
+                        </div>
+                        <div className="name-space">
+                            <div className="name-wd" >
+                                Document3:
+                            </div >
+                            <div className="ui input"><input type="file" name="document3" style={{ border: '0px', marginLeft: '25px' }}
+                                onChange={(e) => this.handleDoc2(e)}
+
+                            /></div>
+                        </div>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={() => this.addAsset()} style={{ marginRight: '230px', width: '120px' }}>Done</Button>
+
+                    </Modal.Actions>
+                </Modal>
+            </div>
+        )
         let PermanentData = (
             <div>
                 <Row >
@@ -280,7 +389,7 @@ class Mortgage extends React.Component {
                         <div className="name-space">
                             <div className="name-wd" >
                                 City:
-        </div >
+                            </div >
                             <div className="ui input"><input type="text" name="ptcity"
                                 onChange={(e) => this.handlePtAddress(e)}
                                 value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcity : ''}
@@ -292,7 +401,6 @@ class Mortgage extends React.Component {
         </div >
                             <div className="ui input"><input type="text"
                                 onChange={(e) => this.handlePtAddress(e)}
-
                                 name="ptstate"
                                 value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptstate : ''}
                                 placeholder="State" /></div>
@@ -320,33 +428,17 @@ class Mortgage extends React.Component {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>AssetType</Table.HeaderCell>
-                            <Table.HeaderCell>Asset Value</Table.HeaderCell>
+                            <Table.HeaderCell>AssetValue</Table.HeaderCell>
                             <Table.HeaderCell>Document</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
                         <Table.Row>
-                            <Table.Cell>abc</Table.Cell>
-                            <Table.Cell>bbbbb</Table.Cell>
-                            <Table.Cell>bbbbb</Table.Cell>
-
+                            <Table.Cell>PropertyDoc</Table.Cell>
+                            <Table.Cell>£ 500000</Table.Cell>
+                            <Table.Cell>property.PDF</Table.Cell>
                         </Table.Row>
-                        <Table.Row>
-                            <Table.Cell>Jamie Harington</Table.Cell>
-                            <Table.Cell>January 11, 2014</Table.Cell>
-                            <Table.Cell>bbbbb</Table.Cell>
-
-
-                        </Table.Row>
-                        <Table.Row>
-                            <Table.Cell>Jamie Harington</Table.Cell>
-                            <Table.Cell>January 11, 2014</Table.Cell>
-                            <Table.Cell>bbbbb</Table.Cell>
-
-
-                        </Table.Row>
-
                     </Table.Body>
                 </Table>
             </div>
@@ -358,12 +450,14 @@ class Mortgage extends React.Component {
                     <div className="name-wd" >
                         LiabilityType:
                             </div >
-                    <Dropdown style={{ height: '20px' }}
+                    <Select style={{ height: '20px' }}
+                        clearable={true}
                         placeholder='Select Type'
+                        ref={el => this.inputType = el}
                         onChange={this.handleLiabilityType}
                         selection
                         options={LibType}
-                        value={value}
+                        value={this.state.liability.liabilityType}
                     />
                 </div>
 
@@ -373,9 +467,10 @@ class Mortgage extends React.Component {
                         Value:
                             </div >
                     <div className="ui input" ><input type="text" style={{ height: '38px' }}
+                        ref={el => this.inputTitle = el}
                         name="AssetValue"
                         onChange={(e) => this.handleOnLiability(e)}
-                        // value={this.state.Asset.assetValue}
+                        value={this.state.liability.AssetValue}
                         placeholder=" RemainingValue" /></div>
                 </div>
                 <div className="name-space">
@@ -386,14 +481,15 @@ class Mortgage extends React.Component {
                             </div >
                     <div className="ui input" ><input type="text" style={{ height: '38px' }}
                         name="AssetTenure"
+                        ref={el => this.inputTenure = el}
                         onChange={(e) => this.handleOnLiability(e)}
-                        // value={this.state.Asset.assetValue}
+                        value={this.state.liability.AssetTenure}
                         placeholder=" RemainingValue" /></div>
 
 
                 </div>
 
-                <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} />
+                <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addLiability} />
 
             </div>
         )
@@ -487,7 +583,7 @@ class Mortgage extends React.Component {
                                             onChange={this.handleGender}
                                             options={options}
                                             placeholder='select'
-                                            selection
+                                            selection={true}
                                             value={value}
                                         />
 
@@ -527,7 +623,7 @@ class Mortgage extends React.Component {
                                         />
 
                                     </div>
-                                    <div className="name-space" style={{ marginLeft: '58px' }}>
+                                    <div className="name-space" style={{ marginLeft: '40px' }}>
                                         <div className="name-wd">
                                             Company:
                                             </div >
@@ -668,18 +764,18 @@ class Mortgage extends React.Component {
                                          </div >
                                                 <div className="ui input"><input type="text" name="bankName"
                                                     onChange={(e) => this.handleOnLiability(e)}
+                                                    ref={el => this.inputBank = el}
+                                                    value={this.state.liability.bankName}
                                                     placeholder="Bank Name" /></div>
                                             </div>}
                                         </div>
                                     </div>
-
-
-
                                 </Col>
                             </Row>
                             <Row>
                                 <Col style={{ marginTop: '10px' }}>
                                     {this.state.ifLiability && liability}
+                                    {this.state.tabOpen && lib}
                                 </Col>
                             </Row>
                         </Accordion.Content>
@@ -718,22 +814,13 @@ class Mortgage extends React.Component {
                                                 //  name="AssetValue" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.assetValue}
                                                 placeholder=" asset value" /></div>
                                         </div>
-                                        <div className="name-space">
-                                            <div className="name-wd">
-                                                Doc:(less than 10MB)
-
-                            </div >
-                                            <div className="ui input btn-style"><input className="btn-style" style={{ border: '0' }} type="file" name="upload"
-                                                //  name="doc" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.doc}
-                                                placeholder="upload" accept=".doc,.pdf" multiple /></div>
-
-
+                                        <div>
+                                            <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '100px', marginTop: '10px' }} onClick={() => this.show()}>Upload Document</Button>
+                                            {modal}
                                         </div>
-
-                                        <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} />
+                                        {/* <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} /> */}
 
                                     </form>
-
 
                                 </Col></Row>
                             <Row>
@@ -743,7 +830,6 @@ class Mortgage extends React.Component {
                             </Row>
                         </Accordion.Content>
                     </Accordion>
-
                     <Accordion styled className="acc-m">
                         <Accordion.Title
                             active={activeIndex === 4}
@@ -760,7 +846,11 @@ class Mortgage extends React.Component {
                                         <div className="name-wd" >
                                             Principle:
                             </div >
-                                        <div className="ui input"><input type="text" placeholder="principle" /></div>
+                                        <div className="ui input"><input type="text" placeholder="principle"
+                                            name="principle"
+                                            value={this.state.expLoan.principle}
+                                            onChange={(e) => { this.handleLoan(e) }}
+                                        /></div>
 
                                     </div>
 
@@ -769,21 +859,28 @@ class Mortgage extends React.Component {
                                             Tenure:
                                             (months)
                             </div >
-                                        <div className="ui input"><input type="text" placeholder="Tenure" /></div>
+                                        <div className="ui input"><input type="text"
+                                            name="tenure"
+                                            value={this.state.expLoan.tenure}
+                                            onChange={(e) => { this.handleLoan(e) }}
+                                            placeholder="Tenure" /></div>
                                     </div>
                                     <div className="name-spaced">
                                         <div className="name-wd">
-                                            Interest(%):
+                                            Intrest(%):
 
                             </div >
-                                        <div className="ui input"><input type="text" placeholder="Interest" /></div>
+                                        <div className="ui input"><input type="text" placeholder="Intrest"
+                                            name="intrest"
+                                            value={this.state.expLoan.intrest}
+                                            onChange={(e) => { this.handleLoan(e) }} /></div>
                                     </div>
                                     <div >
                                         <Radio
-                                            label='flexable'
-                                            name='flexable'
-                                            value='flexable'
-                                            checked={this.state.value === 'flexable'}
+                                            label='flexible'
+                                            name='flexible'
+                                            value='flexible'
+                                            checked={this.state.value === 'flexible'}
                                             onChange={this.handleRadio}
                                             className='radio-space'
                                         />
@@ -802,6 +899,8 @@ class Mortgage extends React.Component {
                         </Accordion.Content>
                     </Accordion>
                     <Row>
+
+                        <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '-70%' }} onClick={() => this.handleProceed()}>Save</Button>
                         <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '250px' }} onClick={() => this.handleProceed()}>Proceed</Button>
                     </Row>
 

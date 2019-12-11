@@ -41,10 +41,19 @@ margin-top: 5px
 .head-m{
     margin-top: 10px;
 }
+.border-margin{
+    border: 0;
+    margin-left: 20px;
+}
 
 .top-align{
     margin-top: 15px;
     display:flex;
+}
+.modalEdit{
+    margin-left: 30%;
+    height: fit-content;
+    margin-top: 150px;
 }
 
 
