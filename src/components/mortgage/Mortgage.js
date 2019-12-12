@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { withRouter } from 'react-router'
-
+import { uuid } from 'uuidv4'
+import axios from 'axios'
 import { Accordion, Icon, Dropdown, Table, Radio, Select, Modal } from 'semantic-ui-react'
 import { Paper } from '@material-ui/core'
 import { Row, Col, Button, } from 'react-bootstrap'
@@ -26,15 +27,31 @@ class Mortgage extends React.Component {
             liability: {},
             expLoan: {},
             financial: [],
+            property: {},
             upload: {},
-            open: false
+            open: false,
+            totalProperty: []
 
         }
 
     }
 
 
+    handleProperty = (e, { value }) => {
+        console.log(value);
+        let propertyType = { ...this.state.property, propertyType: value }
+        console.log(propertyType)
+        this.setState({ property: propertyType }, () => {
+            console.log(this.state.property)
+        })
+    }
 
+    handleAssetVAlue = (e) => {
+        let value = e.target.value;
+        this.setState({
+            property: { ...this.state.property, assestValue: value }
+        })
+    }
     show = () => {
         console.log("hello1212")
         this.setState({ open: true })
@@ -67,7 +84,26 @@ class Mortgage extends React.Component {
         })
     }
 
-    handleProceed() {
+    async handleProceed() {
+        let id = uuid();
+        console.log(id, "kljhjhj")
+        const config = {
+
+        }
+        let body = JSON.stringify(this.state.user)
+        const res = await axios.post("http://localhost:4000/users/", body, id)
+            .then(res => {
+                console.log(res.data, "data")
+                return res.data
+
+            })
+            .catch(e => {
+                throw new Error(e.response.data);
+            });
+        return res;
+
+
+
 
         this.props.history.push('/preview')
 
@@ -75,6 +111,13 @@ class Mortgage extends React.Component {
 
 
     }
+    // componentWillReceiveProps() {
+    //     this.setState({
+    //         user: { ...this.state.user, ...this.state.financial, ...this.state.totalProperty, income: this.state.income, ...this.state.expLoan }
+    //     }, () => {
+    //         console.log("alll data", this.state.user)
+    //     })
+    // }
 
     handleGender = (e, { value }) => {
         console.log(value);
@@ -94,9 +137,23 @@ class Mortgage extends React.Component {
 
     }
     addAsset = () => {
-        this.setState({ tab: true, open: false })
+        this.setState({
+            tab: true, open: false,
+            property: { ...this.state.property, uploadDoc: this.state.upload }
 
-        console.log("icon clicked");
+        })
+
+        let property = this.state.totalProperty;
+        property.push({ ...this.state.property });
+        console.log('-----', property)
+        this.propValue.value = "";
+        this.setState({
+            totalProperty: property,
+            property: {},
+            tab: true
+        }, () => {
+            console.log("icon clicked", this.state.totalProperty);
+        })
     }
 
     handleLiability = (e) => {
@@ -159,9 +216,9 @@ class Mortgage extends React.Component {
         liability[e.target.name] = e.target.value;
         this.setState({
             liability: liability,
-            // user: { ...this.state.user, ...this.state.liability,lib}
+            //  user: { ...this.state.user, ...this.state.liability}
         })
-        console.log(this.state.liability, )
+
     }
 
     addLiability = () => {
@@ -193,28 +250,50 @@ class Mortgage extends React.Component {
     }
 
     handleUpload = (e) => {
+        let property = { ...this.state.property }
+        let file1 = {}
+        file1["name"] = e.target.files[0].name;
+        file1["size"] = e.target.files[0].size;
+        file1["type"] = e.target.files[0].type;
+        console.log(file1, "inside")
         this.setState({
-            upload: e.target.files[0]
+            upload: { ...this.state.upload, file1: file1 },
+            property: { ...property, ...this.state.upload, file1: file1 }
         })
     }
     handleDoc1 = (e) => {
+        let property = { ...this.state.property }
+        let file2 = {}
+        file2["name"] = e.target.files[0].name;
+        file2["size"] = e.target.files[0].size;
+        file2["type"] = e.target.files[0].type;
         this.setState({
-            upload: e.target.files[0]
+            upload: { ...this.state.upload, file2: file2 },
+            property: { ...property, ...this.state.upload, file2: file2 }
+
         })
     }
     handleDoc2 = (e) => {
+        let property = { ...this.state.property }
+        let file3 = {}
+        file3["name"] = e.target.files[0].name;
+        file3["size"] = e.target.files[0].size;
+        file3["type"] = e.target.files[0].type;
         this.setState({
-            upload: e.target.files[0]
+            upload: { ...this.state.upload, file3: file3 },
+            property: { ...property, ...this.state.upload, file3: file3 }
+
         })
     }
 
     render() {
         const { activeIndex, value, open } = this.state
-        console.log(this.state.upload, " file upload")
-        console.log("..........", this.state.financial, "Finance", this.state.liability, "Liability")
-        console.log("value", this.state.liability.AssetValue)
-        console.log("exp loan", this.state.expLoan)
-        console.log(this.state.radio, "radioooo")
+        console.log(this.state.user, "user");
+        console.log(this.state.liability, "liability");
+        console.log(this.state.expLoan, "exploan")
+        console.log(this.state.totalProperty, "totalProperty")
+        console.log(this.state.financial, "financial")
+
         const options = [
             {
                 key: 'Male',
@@ -291,8 +370,8 @@ class Mortgage extends React.Component {
                     </Table.Header>
 
                     <Table.Body>
-                        {this.state.financial.map((financial) => {
-                            return < Table.Row key={financial} >
+                        {this.state.financial.map((financial, i) => {
+                            return < Table.Row key={i} >
                                 <Table.Cell>{financial.bankName}</Table.Cell>
                                 <Table.Cell>{financial.liabilityType}</Table.Cell>
                                 <Table.Cell> £ {financial.AssetValue}</Table.Cell>
@@ -360,7 +439,7 @@ class Mortgage extends React.Component {
                                 Address line 1:
         </div >
                             <div className="ui input"><input type="text" name='ptline1' onChange={(e) => this.handlePtAddress(e)}
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline1 : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline1 : ''}
                                 placeholder="Address line 1" /></div>
                         </div>
 
@@ -369,7 +448,7 @@ class Mortgage extends React.Component {
                                 Address line 2:
         </div >
                             <div className="ui input"><input type="text" name='ptline2' onChange={(e) => this.handlePtAddress(e)}
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline2 : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline2 : ''}
                                 placeholder="Address line 2" /></div>
                         </div>
                         <div className="name-space">
@@ -378,7 +457,7 @@ class Mortgage extends React.Component {
         </div >
                             <div className="ui input"><input type="text" name='ptlandmark'
                                 onChange={(e) => this.handlePtAddress(e)}
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptlandmark : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptlandmark : ''}
                                 placeholder="LandMark" /></div>
                         </div>
                     </Col></Row>
@@ -392,7 +471,7 @@ class Mortgage extends React.Component {
                             </div >
                             <div className="ui input"><input type="text" name="ptcity"
                                 onChange={(e) => this.handlePtAddress(e)}
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcity : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcity : ''}
                                 placeholder="City" /></div>
                         </div>
                         <div className="name-space">
@@ -402,7 +481,7 @@ class Mortgage extends React.Component {
                             <div className="ui input"><input type="text"
                                 onChange={(e) => this.handlePtAddress(e)}
                                 name="ptstate"
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptstate : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptstate : ''}
                                 placeholder="State" /></div>
                         </div>
                         <div className="name-space">
@@ -412,7 +491,7 @@ class Mortgage extends React.Component {
                             <div className="ui input"><input type="text"
                                 onChange={(e) => this.handlePtAddress(e)}
                                 name="ptcountry"
-                                value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcountry : ''}
+                                // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptcountry : ''}
                                 placeholder=" Country" /></div>
                         </div>
                     </Col>
@@ -434,11 +513,16 @@ class Mortgage extends React.Component {
                     </Table.Header>
 
                     <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>PropertyDoc</Table.Cell>
-                            <Table.Cell>£ 500000</Table.Cell>
-                            <Table.Cell>property.PDF</Table.Cell>
-                        </Table.Row>
+                        {this.state.totalProperty.map((property, i) => {
+
+                            return < Table.Row key={i} >
+                                <Table.Cell>{property.propertyType}</Table.Cell>
+                                <Table.Cell> £ {property.assestValue}</Table.Cell>
+                                <Table.Cell> {property.file1 ? property.file1.name + "," : ' '}{' '}{property.file2 ? property.file2.name + "," : ' '}{' '}{property.file3 ? property.file3.name : ' '}</Table.Cell>
+                            </Table.Row>
+
+                        })
+                        }
                     </Table.Body>
                 </Table>
             </div>
@@ -659,7 +743,9 @@ class Mortgage extends React.Component {
                                         <div className="name-wd" >
                                             Address line 1:
         </div >
-                                        <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleCtAddress(e)} value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line1 : ''} placeholder="Address line 1" /></div>
+                                        <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleCtAddress(e)}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line1 : ''}
+                                            placeholder="Address line 1" /></div>
                                     </div>
 
                                     <div className="name-space">
@@ -668,7 +754,7 @@ class Mortgage extends React.Component {
         </div >
                                         <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleCtAddress(e)}
                                             // value={this.state.user.Address.line2}
-                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line2 : ''}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line2 : ''}
                                             placeholder="Address line 2" /></div>
                                     </div>
                                     <div className="name-space">
@@ -676,7 +762,7 @@ class Mortgage extends React.Component {
                                             LandMark:
         </div >
                                         <div className="ui input"><input type="text" name='landmark'
-                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.landmark : ''}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.landmark : ''}
                                             // value={this.state.user.Address.landmark}
                                             onChange={(e) => this.handleCtAddress(e)}
                                             placeholder="LandMark" /></div>
@@ -800,9 +886,10 @@ class Mortgage extends React.Component {
                             </div >
                                             <Dropdown
                                                 placeholder='Select Type'
-
+                                                onChange={this.handleProperty}
                                                 selection
                                                 options={AssetType}
+                                                value={value}
                                             />
                                         </div>
 
@@ -811,7 +898,8 @@ class Mortgage extends React.Component {
                                                 AssetValue:
                             </div >
                                             <div className="ui input"><input type="text"
-                                                //  name="AssetValue" onChange = {(e)=>this.handleOnChange(e)}value={this.state.Asset.assetValue}
+                                                ref={el => this.propValue = el}
+                                                name="AssetValue" onChange={(e) => this.handleAssetVAlue(e)}
                                                 placeholder=" asset value" /></div>
                                         </div>
                                         <div>
