@@ -4,12 +4,198 @@
       "id": "1"
     },
     {
-      "{\"user\":{\"fname\":\"Sundaresan\",\"mobileNo\":\"09865089625\",\"emailId\":\"sundargopal26@gmail.com\"}}": "",
-      "id": "ZixOit1"
+      "user": {
+        "fname": "Sundaresan",
+        "lname": "V",
+        "faName": "Venugopal",
+        "age": "1995-05-26",
+        "mobileNo": "09865089625",
+        "emailId": "sundargopal26@gmail.com",
+        "gender": "Male",
+        "panNo:": "1234567890",
+        "AadharNo": "123456789",
+        "occupation": "Salried",
+        "company:": "Wipro",
+        "Address": {
+          "currentAddress": {
+            "line1": "15 2 kuilan Thoppu 1st Street,",
+            "line2": "karungal palayam,",
+            "city": "e",
+            "state": "T",
+            "country": "India"
+          },
+          "permanentAddress": {}
+        }
+      },
+      "financial": [
+        {
+          "bankName": "Kotak",
+          "liabilityType": "property Morgaged",
+          "AssetValue": "25000",
+          "AssetTenure": "5"
+        }
+      ],
+      "totalProperty": [
+        {
+          "propertyType": "Gold loan",
+          "assestValue": "25000",
+          "file1": {
+            "name": "Final Appliances catalog-2016-17.PDF",
+            "size": 965077,
+            "type": "application/pdf"
+          },
+          "file2": {
+            "name": "expectedLoan.png",
+            "size": 171733,
+            "type": "image/png"
+          },
+          "file3": {
+            "name": "your details.png",
+            "size": 195447,
+            "type": "image/png"
+          }
+        }
+      ],
+      "expLoan": {
+        "principle": "15000",
+        "tenure": "10",
+        "intrest": "10"
+      },
+      "id": "2"
     },
     {
-      "{\"fname\":\"Sundaresan\",\"mobileNo\":\"09865089625\",\"emailId\":\"sundargopal26@gmail.com\",\"lname\":\"V\",\"faName\":\"venugopal\",\"age\":\"1995-05-26\",\"gender\":\"Male\",\"panNo:\":\"123456789\",\"AadharNo\":\"23456789\",\"occupation\":\"Self Employee\",\"company:\":\"wipro\"}": "",
-      "id": "RnF_-5c"
+      "user": {
+        "fname": "Hari",
+        "lname": "V",
+        "faName": "Venugopal",
+        "age": "2000-03-26",
+        "mobileNo": "3456789111",
+        "emailId": "siuhu@h.com",
+        "gender": "Male",
+        "panNo:": "1234567890",
+        "AadharNo": "98765432",
+        "occupation": "Salried",
+        "company:": "Exalca",
+        "Address": {
+          "currentAddress": {
+            "line1": "15 2 kuilan Thoppu 1st Street,",
+            "line2": "karungal palayam,",
+            "city": " Erode",
+            "state": "Tamil Nadu",
+            "country": "India"
+          },
+          "permanentAddress": {
+            "ptline1": "15 2 kuilan Thoppu 1st Street,",
+            "ptline2": "karungal palayam,",
+            "ptcity": " Erode",
+            "ptstate": "Tamil Nadu",
+            "ptcountry": "India"
+          }
+        }
+      },
+      "annualIncome": "250000",
+      "financial": [
+        {
+          "bankName": "hdfc",
+          "liabilityType": "property Morgaged",
+          "AssetValue": "100000",
+          "AssetTenure": "12"
+        }
+      ],
+      "expLoan": {
+        "principle": "250000",
+        "tenure": "48",
+        "intrest": "12"
+      },
+      "totalProperty": [
+        {
+          "propertyType": "Gold loan",
+          "assestValue": "100000",
+          "file1": {
+            "name": "NDA - Offshore.pdf",
+            "size": 110318,
+            "type": "application/pdf"
+          },
+          "file2": {
+            "name": "NDA - Offshore (1).pdf",
+            "size": 110318,
+            "type": "application/pdf"
+          },
+          "file3": {
+            "name": "your details.png",
+            "size": 195447,
+            "type": "image/png"
+          }
+        }
+      ],
+      "id": "KjKks1h"
+    },
+    {
+      "user": {
+        "fname": "Shini",
+        "lname": "V",
+        "faName": "Venugopal",
+        "age": "2000-10-04",
+        "mobileNo": "123456789",
+        "emailId": "sh@g.com",
+        "gender": "female",
+        "panNo:": "23456789",
+        "AadharNo": "97542",
+        "occupation": "Self Employee",
+        "company:": "abc",
+        "Address": {
+          "currentAddress": {
+            "line1": "15 2 kuilan Thoppu 1st Street,",
+            "line2": "karungal palayam,",
+            "city": " Erode",
+            "state": "Tamil Nadu",
+            "country": "India"
+          },
+          "permanentAddress": {
+            "ptline1": "15 2 kuilan Thoppu 1st Street,",
+            "ptline2": "karungal palayam,",
+            "ptcity": " Erode",
+            "ptstate": "Tamil Nadu",
+            "ptcountry": "India"
+          }
+        }
+      },
+      "annualIncome": "300000",
+      "financial": [
+        {
+          "bankName": "icici",
+          "liabilityType": "property Morgaged",
+          "AssetValue": "20000",
+          "AssetTenure": "20"
+        }
+      ],
+      "expLoan": {
+        "principle": "200000",
+        "tenure": "48",
+        "intrest": "11"
+      },
+      "totalProperty": [
+        {
+          "propertyType": "property against",
+          "assestValue": "100000",
+          "file1": {
+            "name": "NDA - Offshore.pdf",
+            "size": 110318,
+            "type": "application/pdf"
+          },
+          "file2": {
+            "name": "property.png",
+            "size": 187173,
+            "type": "image/png"
+          },
+          "file3": {
+            "name": "Final Appliances catalog-2016-17.PDF",
+            "size": 965077,
+            "type": "application/pdf"
+          }
+        }
+      ],
+      "id": "Req1576214812"
     }
   ]
 }

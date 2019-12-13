@@ -19,6 +19,7 @@ class Mortgage extends React.Component {
             activeIndex: 0,
             sameAddr: false,
             user: {},
+            reqId: '',
             address: {
                 currentAddress: {},
                 permanentAddress: {}
@@ -85,13 +86,13 @@ class Mortgage extends React.Component {
     }
 
     async handleProceed() {
-        let id = uuid();
-        console.log(id, "kljhjhj")
-        const config = {
-
-        }
-        let body = JSON.stringify(this.state.user)
-        const res = await axios.post("http://localhost:4000/users/", body, id)
+        const { financial, user, expLoan, totalProperty, annualIncome, radio } = this.state;
+        let id = `Req${Math.floor(Date.now() / 1000)}`
+        // reqId = id;
+        let expLoans = { ...expLoan, radio }
+        localStorage.setItem("ReqId", id);
+        let body = { user, annualIncome, financial, expLoans, totalProperty, id }
+        const res = await axios.post("http://localhost:4000/users/", body, )
             .then(res => {
                 console.log(res.data, "data")
                 return res.data
@@ -100,16 +101,12 @@ class Mortgage extends React.Component {
             .catch(e => {
                 throw new Error(e.response.data);
             });
-        return res;
 
-
-
-
-        this.props.history.push('/preview')
+        this.props.history.push('/preview', id)
 
         console.log("preview", this.props);
 
-
+        return res;
     }
     // componentWillReceiveProps() {
     //     this.setState({
@@ -392,7 +389,7 @@ class Mortgage extends React.Component {
         )
         let modal = (
             <div >
-                <Modal size='tiny' open={open} onClose={this.close} closeIcon className="modalEdit" style={{ marginTop: '150px', marginLeft: '30%' }}>
+                <Modal size='tiny' open={open} onClose={this.close} closeOnDimmerClick={false} className="modalEdit" style={{ marginTop: '150px', marginLeft: '30%' }} closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}>
                     <Modal.Header>Please Upload Required Document</Modal.Header>
                     <Modal.Content>
                         <div className="name-space">
@@ -778,7 +775,7 @@ class Mortgage extends React.Component {
         </div >
                                         <div className="ui input"><input type="text" name="city"
                                             onChange={(e) => this.handleCtAddress(e)}
-                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.city : ''}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.city : ''}
                                             // value={this.state.user.Address.city}
                                             placeholder="City" /></div>
                                     </div>
@@ -788,7 +785,7 @@ class Mortgage extends React.Component {
         </div >
                                         <div className="ui input"><input type="text"
                                             onChange={(e) => this.handleCtAddress(e)}
-                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.state : ''}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.state : ''}
                                             // value={this.state.user.Address.state}
                                             name="state"
                                             placeholder="State" /></div>
@@ -800,7 +797,7 @@ class Mortgage extends React.Component {
                                         <div className="ui input"><input type="text"
                                             name="country"
                                             onChange={(e) => this.handleCtAddress(e)}
-                                            value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.country : ''}
+                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.country : ''}
                                             // value={this.state.user.Address.country}
                                             placeholder=" Country" /></div>
                                     </div>
