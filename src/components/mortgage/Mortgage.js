@@ -31,7 +31,8 @@ class Mortgage extends React.Component {
             property: {},
             upload: {},
             open: false,
-            totalProperty: []
+            totalProperty: [],
+            status: 'pending'
 
         }
 
@@ -86,12 +87,12 @@ class Mortgage extends React.Component {
     }
 
     async handleProceed() {
-        const { financial, user, expLoan, totalProperty, annualIncome, radio } = this.state;
+        const { financial, user, expLoan, totalProperty, annualIncome, radio, status } = this.state;
         let id = `Req${Math.floor(Date.now() / 1000)}`
         // reqId = id;
         let expLoans = { ...expLoan, radio }
         localStorage.setItem("ReqId", id);
-        let body = { user, annualIncome, financial, expLoans, totalProperty, id }
+        let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
         const res = await axios.post("http://localhost:4000/users/", body, )
             .then(res => {
                 console.log(res.data, "data")
@@ -108,13 +109,7 @@ class Mortgage extends React.Component {
 
         return res;
     }
-    // componentWillReceiveProps() {
-    //     this.setState({
-    //         user: { ...this.state.user, ...this.state.financial, ...this.state.totalProperty, income: this.state.income, ...this.state.expLoan }
-    //     }, () => {
-    //         console.log("alll data", this.state.user)
-    //     })
-    // }
+
 
     handleGender = (e, { value }) => {
         console.log(value);
