@@ -14,7 +14,23 @@ export default class Header extends React.Component {
                 <Navbar bg="primary" variant="dark" expand="lg">
                     <Navbar.Brand href="/">Mortgage Loan</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Nav variant="pills" defaultActiveKey="/">
+                    <Nav.Item>
+                        <Nav.Link href="/paymentLoan">Payment Loan</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey="link-1">Option 2</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey="disabled" disabled>
+                        Disabled
+                        </Nav.Link>
+                    </Nav.Item>
+                    </Nav>
                     <Navbar.Collapse id="basic-navbar-nav" className="left-spacing"  >
+               
+                    
+
                         <Form inline style={{ marginLeft: '200px' }}>
                             <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                             <Button variant="outline-light">Search</Button>

@@ -7,6 +7,7 @@ import Landing from './components/landing/Landing'
 import Header from './components/landing/Navbar'
 import Mortgage from './components/mortgage/Mortgage'
 import Preview from './components/mortgage/Preview'
+import PaymentLoan from './components/PaymentLoan'
 import { history } from "../src/components/helpers/history"
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route exact path='/' render={() => <Header > <Landing /></Header>} />
           <Route exact path='/mortgage' render={() => <Header > <Mortgage /></Header>} />
           <Route exact path='/Preview' render={() => <Header > <Preview /></Header>} />
+          <Route exact path = '/paymentLoan' render={() => <Header > <PaymentLoan /></Header>} />
         </Switch>
       </Fragment>
     </Router>
