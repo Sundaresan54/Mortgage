@@ -5,7 +5,7 @@ import { uuid } from 'uuidv4'
 import axios from 'axios'
 import { Accordion, Icon, Dropdown, Table, Radio, Select, Modal } from 'semantic-ui-react'
 import { Paper } from '@material-ui/core'
-import { Row, Col, Button, } from 'react-bootstrap'
+import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import './style.css';
 
 class Mortgage extends React.Component {
@@ -32,7 +32,8 @@ class Mortgage extends React.Component {
             upload: {},
             open: false,
             totalProperty: [],
-            status: 'pending'
+            status: 'pending',
+            search: ''
 
         }
 
@@ -84,6 +85,14 @@ class Mortgage extends React.Component {
         this.setState({
             user: user
         })
+    }
+    searchKey = (e) => {
+        console.log("hello", e.target.value)
+        let val = e.target.value
+        this.setState({
+            search: val
+        })
+
     }
 
     async handleProceed() {
@@ -573,9 +582,18 @@ class Mortgage extends React.Component {
 
         return (
             <div className="head-m" style={{ backgroundColor: '#f5f6fa', paddingBottom: '45px' }}>
-                <h2 className="heading-m">
-                    Welcome to the Mortgages
+                <div style={{ display: 'flex' }}>
+                    <h2 className="heading-m">
+                        Welcome to the Mortgages
                 </h2>
+                    <Form inline style={{ marginLeft: '200px' }} >
+                        <FormControl type="text" placeholder="Request Number...." className="mr-sm-2"
+                            ref={el => this.search = el}
+                            onChange={(e) => this.searchKey(e)} defaultValue={this.state.search} style={{ marginLeft: '90px', paddingRight: '35px' }} />
+                        <Icon size="large" inverted name='search' className="searchIcon" color='black' link onClick={() => this.fetchKey()} />
+                    </Form>
+                </div>
+
 
                 <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px' }}>
                     <Accordion styled className="acc-m">
