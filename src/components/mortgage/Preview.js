@@ -41,7 +41,7 @@ this.state={
         render(){
             console.log(this.state.reqId,"khjkhjk")
             return (
-                <div style={{ backgroundColor: '#f5f6fa', paddingBottom: '75px', paddingTop: '25px' }}>
+                <div style={{ backgroundColor: '#f5f6fa', paddingBottom: '75px', paddingTop: '25px',marginTop: '0px' }}>
         
                     <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px' }}>
                         <h2>Preview Loan</h2>

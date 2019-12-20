@@ -595,7 +595,7 @@ class Mortgage extends React.Component {
                 </div>
 
 
-                <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px' }}>
+                <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px',marginTop:'25px' }}>
                     <Accordion styled className="acc-m">
                         <Accordion.Title
                             active={activeIndex === 0}

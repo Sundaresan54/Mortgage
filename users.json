@@ -54,9 +54,9 @@
         }
       ],
       "expLoan": {
-        "principle": "50000",
-        "tenure": "12",
-        "interest": "12",
+        "principle": "300000",
+        "tenure": "60",
+        "interest": "12.25",
         "startDate": "2020-02-01",
         "propertyType": "Gold"
       },

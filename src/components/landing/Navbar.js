@@ -13,33 +13,33 @@ export default class Header extends React.Component {
         }
     }
 
-    async fetchKey() {
-        const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
-            .then(res => {
-                console.log(res.data, "reqData is coming")
-                this.setState({
-                    user: res.data
-                }, () => console.log(this.state.user.user, "-------------------")
+    // async fetchKey() {
+    //     const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
+    //         .then(res => {
+    //             console.log(res.data, "reqData is coming")
+    //             this.setState({
+    //                 user: res.data
+    //             }, () => console.log(this.state.user.user, "-------------------")
 
-                )
+    //             )
 
-                localStorage.setItem("searchData1", JSON.stringify(this.state.user))
+    //             localStorage.setItem("searchData1", JSON.stringify(this.state.user))
 
-            })
-            .catch(e => {
-                throw new Error(e.response.data);
-            });
-        this.search.value = "";
+    //         })
+    //         .catch(e => {
+    //             throw new Error(e.response.data);
+    //         });
+    //     this.search.value = "";
 
-    }
-    searchKey = (e) => {
-        console.log("hello", e.target.value)
-        let val = e.target.value
-        this.setState({
-            search: val
-        })
-        localStorage.setItem('reqID', val)
-    }
+    // }
+    // searchKey = (e) => {
+    //     console.log("hello", e.target.value)
+    //     let val = e.target.value
+    //     this.setState({
+    //         search: val
+    //     })
+    //     localStorage.setItem('reqID', val)
+    // }
     render() {
         return (
             <div>
@@ -58,12 +58,12 @@ export default class Header extends React.Component {
 
 
 
-                        <Form inline style={{ marginLeft: '200px' }} >
+                        {/* <Form inline style={{ marginLeft: '200px' }} >
                             <FormControl type="text" placeholder="Search" className="mr-sm-2"
                                 ref={el => this.search = el}
                                 onChange={(e) => this.searchKey(e)} defaultValue={this.state.search} />
                             <Icon size="large" inverted name='search' className="searchIcon" color='white' link onClick={() => this.fetchKey()} />
-                        </Form>
+                        </Form> */}
                         <Nav className="ml-auto">
 
                             <Nav.Link href="#link">Services</Nav.Link>

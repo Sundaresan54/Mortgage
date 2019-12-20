@@ -87,7 +87,7 @@ class PaymentLoan extends React.Component {
       },
     ]
     return (
-      <div>
+      <div className="head-m" style={{ backgroundColor: '#f5f6fa', paddingBottom: '45px', marginTop: '0px' }}>
         <h2>Payment Loan</h2>
 
 
