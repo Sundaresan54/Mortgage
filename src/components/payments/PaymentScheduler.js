@@ -37,7 +37,9 @@ class PaymentScheduler extends React.Component {
         })
         console.log("hello")
     }
-
+    handleOnChange = () => {
+        console.log("inside change")
+    }
     async fetchKey() {
 
         const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
@@ -121,6 +123,28 @@ class PaymentScheduler extends React.Component {
 
     render() {
         const { open } = this.state;
+        const payment = [
+            {
+                key: 'cash',
+                text: 'cash',
+                value: 'cash'
+            },
+            {
+                key: 'cheque',
+                text: 'cheque',
+                value: 'cheque'
+            },
+            {
+                key: 'NFFT',
+                text: 'NFFT',
+                value: 'NFFT'
+            },
+            {
+                key: 'IMPS',
+                text: 'IMPS',
+                value: 'IMPS'
+            },
+        ]
         let modal = (
             <div>
                 <Modal size='small' open={open} onClose={this.close} closeOnDimmerClick={false} className="modalEdit" style={{ marginTop: '150px', marginLeft: '30%' }} closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}>
@@ -142,8 +166,21 @@ class PaymentScheduler extends React.Component {
 
                                     <Table.Cell>{this.state.currentData.month}</Table.Cell>
                                     <Table.Cell>{this.state.currentData.emi}</Table.Cell>
-                                    <Table.Cell></Table.Cell>
-                                    <Table.Cell></Table.Cell>
+                                    <Table.Cell>
+                                        <input type="date"
+                                            name="Date" onBlur={(e) => this.handleOnChange(e)}
+                                            placeholder="Payment Date" />
+
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <Dropdown
+                                            onChange={this.paymentMode}
+                                            options={payment}
+                                            placeholder='select'
+                                            selection={true}
+                                            value={value}
+                                        />
+                                    </Table.Cell>
                                 </Table.Row>
                             </Table.Body>
                         </Table>
