@@ -16,10 +16,23 @@ class PaymentScheduler extends React.Component {
             interest: '',
             emiSchedule: [],
             open: false,
-            currentData: {}
+            currentData: [],
+            paid: false,
+            bgColor: '',
+            selectedRow: -1,
+            indexValue: -1,
+            disableRow: false
+
         }
     }
 
+
+    // componentDidMount(){
+    //     const res = axios.get(`http://localhost:4000/users/${id}`)
+    //     .then(res =>{
+    //         user: res.data
+    //     })
+    // }
     searchKey = (e) => {
         console.log("hello", e.target.value)
         let val = e.target.value
@@ -28,18 +41,58 @@ class PaymentScheduler extends React.Component {
         })
 
     }
+
+
     close = () => this.setState({ open: false })
-    show = (data) => {
-        console.log(data)
+    show = (data, i) => {
         this.setState({
             open: true,
-            currentData: data
+            currentData: data,
+            indexValue: i
         })
-        console.log("hello")
+
     }
-    handleOnChange = () => {
-        console.log("inside change")
+    handleOnChange = (e) => {
+        let currentData = { ...this.state.currentData, ctDate: e.target.value }
+        this.setState({
+            currentData: currentData
+        })
     }
+    paymentDone() {
+        const id = this.state.user.id;
+        console.log(this.state.user, "user data current")
+        let i = this.state.indexValue
+        let property = this.state.emiSchedule;
+        console.log(property, "beforeeeeeeeeeeeeee")
+        property[i]["paymentMode"] = this.state.currentData.paymentType
+        property[i]["ctDate"] = this.state.currentData.ctDate
+        console.log(property, "afterrrrrrr")
+        this.setState({
+            open: false,
+            emiSchedule: property,
+            user: { ...this.state.user, emiScheduler: property }
+        }, () => {
+            const res = axios.put(`http://localhost:4000/users/${id}`, this.state.user)
+                .then(res => {
+                    console.log(res.data, "patched")
+                })
+                .catch(e => {
+                    throw new Error(e.response.data);
+                });
+            return res;
+        })
+
+    }
+    paymentMode = (e, { value }) => {
+        let currentData = { ...this.state.currentData, paymentType: value }
+        this.setState({
+            currentData: currentData
+        }, () => {
+            console.log("adding data", this.state.currentData)
+
+        })
+    }
+
     async fetchKey() {
 
         const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
@@ -47,6 +100,8 @@ class PaymentScheduler extends React.Component {
                 console.log(res.data, "data")
                 this.setState({
                     user: res.data
+                }, () => {
+                    console.log(res.data, "all dattaaaaa")
                 })
                 let cal = (res.data.expLoan.principle);
                 let tenure = Number(res.data.expLoan.tenure);
@@ -122,6 +177,7 @@ class PaymentScheduler extends React.Component {
 
 
     render() {
+        console.log(typeof this.state.ctDate, "whole")
         const { open } = this.state;
         const payment = [
             {
@@ -155,7 +211,7 @@ class PaymentScheduler extends React.Component {
                                 <Table.Row>
                                     <Table.HeaderCell> EMI Due Date</Table.HeaderCell>
                                     <Table.HeaderCell>Amount</Table.HeaderCell>
-                                    <Table.HeaderCell>Payement Date</Table.HeaderCell>
+                                    <Table.HeaderCell>Payment Date</Table.HeaderCell>
                                     <Table.HeaderCell>Payment Mode</Table.HeaderCell>
 
                                 </Table.Row>
@@ -169,7 +225,8 @@ class PaymentScheduler extends React.Component {
                                     <Table.Cell>
                                         <input type="date"
                                             name="Date" onBlur={(e) => this.handleOnChange(e)}
-                                            placeholder="Payment Date" />
+                                            placeholder="Payment Date"
+                                            defaultValue={this.state.currentData.ctDate} />
 
                                     </Table.Cell>
                                     <Table.Cell>
@@ -178,7 +235,7 @@ class PaymentScheduler extends React.Component {
                                             options={payment}
                                             placeholder='select'
                                             selection={true}
-                                            value={value}
+                                            defaultValue={this.state.currentData.paymentType}
                                         />
                                     </Table.Cell>
                                 </Table.Row>
@@ -186,7 +243,7 @@ class PaymentScheduler extends React.Component {
                         </Table>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button onClick={() => this.addAsset()} style={{ marginRight: '230px', width: '120px' }}>Done</Button>
+                        <Button onClick={() => this.paymentDone()} style={{ marginRight: '230px', width: '120px', color: "white", backgroundColor: 'green' }}>Done</Button>
 
                     </Modal.Actions>
                 </Modal>
@@ -218,7 +275,7 @@ class PaymentScheduler extends React.Component {
 
                     </div>
 
-                    <Table striped>
+                    <Table >
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>SNo</Table.HeaderCell>
@@ -230,15 +287,18 @@ class PaymentScheduler extends React.Component {
                             </Table.Row>
                         </Table.Header>
 
-                        <Table.Body>
+                        <Table.Body className="tableHover">
                             {
                                 this.state.emiSchedule && this.state.emiSchedule.map((data, i) => {
-                                    return <Table.Row key={i} >
-                                        <Table.Cell>{i + 1}</Table.Cell>
-                                        <Table.Cell style={{
+                                    { console.log(this.state.selectedRow === i, "checking.....") }
+                                    return <Table.Row className={this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
+                                        style={{
                                             cursor: 'pointer',
                                             textDecoration: 'none'
-                                        }} onClick={() => this.show(data, i)}>{data.month}</Table.Cell>
+                                        }} onClick={() => this.show(data, i)}
+                                        disabled={this.state.user.emiScheduler[i].paymentMode !== undefined ? this.state.disableRow : false} >
+                                        <Table.Cell>{i + 1}</Table.Cell>
+                                        <Table.Cell >{data.month}</Table.Cell>
                                         <Table.Cell>{data.principal}</Table.Cell>
                                         <Table.Cell>{data.interest}</Table.Cell>
                                         <Table.Cell>{data.emi}</Table.Cell>

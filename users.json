@@ -61,7 +61,431 @@
         "propertyType": "Gold"
       },
       "id": "Req0001",
-      "status": "Approved"
+      "status": "Approved",
+      "emiScheduler": [
+        {
+          "month": "1-2-2020",
+          "interest": 3063,
+          "principal": 3649,
+          "outstandingBal": 296351,
+          "emi": 6711
+        },
+        {
+          "month": "1-3-2020",
+          "interest": 3025,
+          "principal": 3686,
+          "outstandingBal": 292665,
+          "emi": 6711,
+          "paymentMode": "NFFT",
+          "ctDate": "2019-12-19"
+        },
+        {
+          "month": "1-4-2020",
+          "interest": 2988,
+          "principal": 3723,
+          "outstandingBal": 288941,
+          "emi": 6711
+        },
+        {
+          "month": "1-5-2020",
+          "interest": 2950,
+          "principal": 3761,
+          "outstandingBal": 285179,
+          "emi": 6711
+        },
+        {
+          "month": "1-6-2020",
+          "interest": 2911,
+          "principal": 3800,
+          "outstandingBal": 281379,
+          "emi": 6711
+        },
+        {
+          "month": "1-7-2020",
+          "interest": 2872,
+          "principal": 3839,
+          "outstandingBal": 277540,
+          "emi": 6711
+        },
+        {
+          "month": "1-8-2020",
+          "interest": 2833,
+          "principal": 3878,
+          "outstandingBal": 273662,
+          "emi": 6711
+        },
+        {
+          "month": "1-9-2020",
+          "interest": 2794,
+          "principal": 3917,
+          "outstandingBal": 269744,
+          "emi": 6711
+        },
+        {
+          "month": "1-10-2020",
+          "interest": 2754,
+          "principal": 3957,
+          "outstandingBal": 265786,
+          "emi": 6711
+        },
+        {
+          "month": "1-11-2020",
+          "interest": 2713,
+          "principal": 3998,
+          "outstandingBal": 261788,
+          "emi": 6711
+        },
+        {
+          "month": "1-12-2020",
+          "interest": 2672,
+          "principal": 4039,
+          "outstandingBal": 257749,
+          "emi": 6711
+        },
+        {
+          "month": "1-1-2021",
+          "interest": 2631,
+          "principal": 4080,
+          "outstandingBal": 253669,
+          "emi": 6711
+        },
+        {
+          "month": "1-2-2021",
+          "interest": 2590,
+          "principal": 4121,
+          "outstandingBal": 249547,
+          "emi": 6711
+        },
+        {
+          "month": "1-3-2021",
+          "interest": 2547,
+          "principal": 4164,
+          "outstandingBal": 245383,
+          "emi": 6711
+        },
+        {
+          "month": "1-4-2021",
+          "interest": 2505,
+          "principal": 4206,
+          "outstandingBal": 241176,
+          "emi": 6711
+        },
+        {
+          "month": "1-5-2021",
+          "interest": 2462,
+          "principal": 4249,
+          "outstandingBal": 236927,
+          "emi": 6711
+        },
+        {
+          "month": "1-6-2021",
+          "interest": 2419,
+          "principal": 4292,
+          "outstandingBal": 232634,
+          "emi": 6711
+        },
+        {
+          "month": "1-7-2021",
+          "interest": 2375,
+          "principal": 4336,
+          "outstandingBal": 228297,
+          "emi": 6711
+        },
+        {
+          "month": "1-8-2021",
+          "interest": 2331,
+          "principal": 4380,
+          "outstandingBal": 223916,
+          "emi": 6711
+        },
+        {
+          "month": "1-9-2021",
+          "interest": 2286,
+          "principal": 4425,
+          "outstandingBal": 219490,
+          "emi": 6711
+        },
+        {
+          "month": "1-10-2021",
+          "interest": 2241,
+          "principal": 4470,
+          "outstandingBal": 215019,
+          "emi": 6711
+        },
+        {
+          "month": "1-11-2021",
+          "interest": 2195,
+          "principal": 4516,
+          "outstandingBal": 210502,
+          "emi": 6711
+        },
+        {
+          "month": "1-12-2021",
+          "interest": 2149,
+          "principal": 4562,
+          "outstandingBal": 205939,
+          "emi": 6711
+        },
+        {
+          "month": "1-1-2022",
+          "interest": 2102,
+          "principal": 4609,
+          "outstandingBal": 201330,
+          "emi": 6711
+        },
+        {
+          "month": "1-2-2022",
+          "interest": 2055,
+          "principal": 4656,
+          "outstandingBal": 196674,
+          "emi": 6711
+        },
+        {
+          "month": "1-3-2022",
+          "interest": 2008,
+          "principal": 4703,
+          "outstandingBal": 191970,
+          "emi": 6711
+        },
+        {
+          "month": "1-4-2022",
+          "interest": 1960,
+          "principal": 4751,
+          "outstandingBal": 187218,
+          "emi": 6711
+        },
+        {
+          "month": "1-5-2022",
+          "interest": 1911,
+          "principal": 4800,
+          "outstandingBal": 182418,
+          "emi": 6711
+        },
+        {
+          "month": "1-6-2022",
+          "interest": 1862,
+          "principal": 4849,
+          "outstandingBal": 177569,
+          "emi": 6711
+        },
+        {
+          "month": "1-7-2022",
+          "interest": 1813,
+          "principal": 4898,
+          "outstandingBal": 172670,
+          "emi": 6711
+        },
+        {
+          "month": "1-8-2022",
+          "interest": 1763,
+          "principal": 4948,
+          "outstandingBal": 167721,
+          "emi": 6711
+        },
+        {
+          "month": "1-9-2022",
+          "interest": 1712,
+          "principal": 4999,
+          "outstandingBal": 162722,
+          "emi": 6711
+        },
+        {
+          "month": "1-10-2022",
+          "interest": 1661,
+          "principal": 5050,
+          "outstandingBal": 157672,
+          "emi": 6711
+        },
+        {
+          "month": "1-11-2022",
+          "interest": 1610,
+          "principal": 5101,
+          "outstandingBal": 152570,
+          "emi": 6711
+        },
+        {
+          "month": "1-12-2022",
+          "interest": 1557,
+          "principal": 5154,
+          "outstandingBal": 147416,
+          "emi": 6711
+        },
+        {
+          "month": "1-1-2023",
+          "interest": 1505,
+          "principal": 5206,
+          "outstandingBal": 142209,
+          "emi": 6711
+        },
+        {
+          "month": "1-2-2023",
+          "interest": 1452,
+          "principal": 5259,
+          "outstandingBal": 136949,
+          "emi": 6711
+        },
+        {
+          "month": "1-3-2023",
+          "interest": 1398,
+          "principal": 5313,
+          "outstandingBal": 131636,
+          "emi": 6711
+        },
+        {
+          "month": "1-4-2023",
+          "interest": 1344,
+          "principal": 5367,
+          "outstandingBal": 126268,
+          "emi": 6711
+        },
+        {
+          "month": "1-5-2023",
+          "interest": 1289,
+          "principal": 5422,
+          "outstandingBal": 120845,
+          "emi": 6711
+        },
+        {
+          "month": "1-6-2023",
+          "interest": 1234,
+          "principal": 5477,
+          "outstandingBal": 115367,
+          "emi": 6711
+        },
+        {
+          "month": "1-7-2023",
+          "interest": 1178,
+          "principal": 5533,
+          "outstandingBal": 109833,
+          "emi": 6711
+        },
+        {
+          "month": "1-8-2023",
+          "interest": 1121,
+          "principal": 5590,
+          "outstandingBal": 104243,
+          "emi": 6711
+        },
+        {
+          "month": "1-9-2023",
+          "interest": 1064,
+          "principal": 5647,
+          "outstandingBal": 98596,
+          "emi": 6711
+        },
+        {
+          "month": "1-10-2023",
+          "interest": 1007,
+          "principal": 5704,
+          "outstandingBal": 92891,
+          "emi": 6711
+        },
+        {
+          "month": "1-11-2023",
+          "interest": 948,
+          "principal": 5763,
+          "outstandingBal": 87128,
+          "emi": 6711
+        },
+        {
+          "month": "1-12-2023",
+          "interest": 889,
+          "principal": 5822,
+          "outstandingBal": 81306,
+          "emi": 6711
+        },
+        {
+          "month": "1-1-2024",
+          "interest": 830,
+          "principal": 5881,
+          "outstandingBal": 75424,
+          "emi": 6711
+        },
+        {
+          "month": "1-2-2024",
+          "interest": 770,
+          "principal": 5941,
+          "outstandingBal": 69482,
+          "emi": 6711
+        },
+        {
+          "month": "1-3-2024",
+          "interest": 709,
+          "principal": 6002,
+          "outstandingBal": 63480,
+          "emi": 6711
+        },
+        {
+          "month": "1-4-2024",
+          "interest": 648,
+          "principal": 6063,
+          "outstandingBal": 57417,
+          "emi": 6711
+        },
+        {
+          "month": "1-5-2024",
+          "interest": 586,
+          "principal": 6125,
+          "outstandingBal": 51292,
+          "emi": 6711
+        },
+        {
+          "month": "1-6-2024",
+          "interest": 524,
+          "principal": 6187,
+          "outstandingBal": 45104,
+          "emi": 6711
+        },
+        {
+          "month": "1-7-2024",
+          "interest": 460,
+          "principal": 6251,
+          "outstandingBal": 38853,
+          "emi": 6711
+        },
+        {
+          "month": "1-8-2024",
+          "interest": 397,
+          "principal": 6314,
+          "outstandingBal": 32538,
+          "emi": 6711
+        },
+        {
+          "month": "1-9-2024",
+          "interest": 332,
+          "principal": 6379,
+          "outstandingBal": 26159,
+          "emi": 6711
+        },
+        {
+          "month": "1-10-2024",
+          "interest": 267,
+          "principal": 6444,
+          "outstandingBal": 19715,
+          "emi": 6711
+        },
+        {
+          "month": "1-11-2024",
+          "interest": 201,
+          "principal": 6510,
+          "outstandingBal": 13205,
+          "emi": 6711
+        },
+        {
+          "month": "1-12-2024",
+          "interest": 135,
+          "principal": 6576,
+          "outstandingBal": 6628,
+          "emi": 6711
+        },
+        {
+          "month": "1-1-2025",
+          "interest": 68,
+          "principal": 6643,
+          "outstandingBal": 0,
+          "emi": 6711
+        }
+      ]
     },
     {
       "user": {

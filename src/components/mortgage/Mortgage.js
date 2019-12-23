@@ -129,6 +129,13 @@ class Mortgage extends React.Component {
         })
 
     }
+    propertySelect = (e, { value }) => {
+        console.log(value);
+        this.setState({ ...this.state.expLoan, propertyType: value }, () => {
+
+        })
+
+    }
     handleOccup = (e, { value }) => {
         let details = { ...this.state.user, occupation: value }
         console.log(details)
@@ -356,6 +363,30 @@ class Mortgage extends React.Component {
                 text: 'property Morgaged',
                 value: 'property Morgaged'
             },
+        ]
+
+        const property = [
+            {
+                key: 'Gold',
+                text: 'Gold',
+                value: 'Gold'
+            },
+            {
+                key: 'property against',
+                text: 'property against',
+                value: 'property against'
+            },
+            {
+                key: 'car',
+                text: 'car',
+                value: 'car'
+            }, {
+                key: 'Others',
+                text: 'Others',
+                value: 'Others'
+            }
+
+
         ]
         let lib = (
 
@@ -595,7 +626,7 @@ class Mortgage extends React.Component {
                 </div>
 
 
-                <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px',marginTop:'25px' }}>
+                <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px', marginTop: '25px' }}>
                     <Accordion styled className="acc-m">
                         <Accordion.Title
                             active={activeIndex === 0}
@@ -973,25 +1004,51 @@ class Mortgage extends React.Component {
                                             value={this.state.expLoan.intrest}
                                             onChange={(e) => { this.handleLoan(e) }} /></div>
                                     </div>
-                                    <div >
+
+
+
+                                </Col>
+                                <Col className="same-row" style= {{marginLeft:'-37px'}}>
+                                    <div className="name-space">
+                                        <div className="name-wd" >
+                                            Property:
+                            </div >
+                                        <Dropdown
+                                            onChange={this.propertySelect}
+                                            options={property}
+                                            placeholder='select'
+                                            selection={true}
+                                            value={value}
+                                        />
+                                    </div>
+                                    <div className="name-space">
+
+
+                                        <div className="name-wd">
+                                            StartDate:
+                            </div >
+                                        <div className="ui input"><input type="date"
+                                            name="StartDate" onBlur={(e) => this.handleOnChange(e)} defaultValue={this.state.expLoan.startDate}
+                                            placeholder="startDate" /></div>
+                                    </div>
+                                    <div className="name-space" >
                                         <Radio
-                                            label='flexible'
+                                            label='Flexible'
                                             name='flexible'
                                             value='flexible'
                                             checked={this.state.value === 'flexible'}
                                             onChange={this.handleRadio}
-                                            className='radio-space'
+                                            className='radio-space name-wd '
                                         />
                                         <Radio
-                                            label='fixed'
+                                            label='Fixed'
                                             name='fixed'
                                             value='fixed'
                                             checked={this.state.value === 'fixed'}
                                             onChange={this.handleRadio}
+                                            className='radio-space name-wd '
                                         />
                                     </div>
-
-
                                 </Col>
                             </Row>
                         </Accordion.Content>
