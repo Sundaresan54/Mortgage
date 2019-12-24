@@ -11,10 +11,10 @@ class PaymentLoan extends React.Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
 
     // console.log(this.state.reqId, "khjkhj.kdjhskdhcskhcskdhjkk")
-    const res = await axios.get(`http://localhost:4000/users/`, )
+    const res = axios.get(`http://localhost:4000/users/`, )
       .then(res => {
         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
         this.setState({

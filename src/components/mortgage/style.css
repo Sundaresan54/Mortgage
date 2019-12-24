@@ -22,8 +22,11 @@
     margin-top: 10px;
     margin-left: 5px;
 }
+.errorAlert{
+    border-color: rgb(247, 12, 12);
+}
 .name-wd{
-    width: 90px;  
+    width: 95px;  
     margin-top: 10px;
 }
 .space-checkbox{

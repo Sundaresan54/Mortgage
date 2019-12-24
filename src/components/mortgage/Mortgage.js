@@ -33,7 +33,10 @@ class Mortgage extends React.Component {
             open: false,
             totalProperty: [],
             status: 'pending',
-            search: ''
+            search: '',
+            totalUser: 0,
+            errorMsg: '',
+            errorBorder: ''
 
         }
 
@@ -63,10 +66,47 @@ class Mortgage extends React.Component {
     close = () => this.setState({ open: false })
     handleClick = (e, titleProps) => {
         const { index } = titleProps
-        const { activeIndex } = this.state
+        const { activeIndex, user } = this.state
+        console.log(activeIndex, "active..........", index, "index......")
         const newIndex = activeIndex === index ? -1 : index
+        if (index === 0) {
+            this.setState({ activeIndex: newIndex })
+        }
+        if (index === 1) {
+            console.log("hello", index)
+            if (user.fname !== undefined) {
+                console.log('alert')
 
-        this.setState({ activeIndex: newIndex })
+                this.setState({ activeIndex: newIndex })
+            }
+            else {
+                console.log("jhgjhghj", user.fname)
+            }
+        }
+        if (index === 2) {
+            console.log("helloiiiiiii", index, user.Address.currentAddress.line1)
+            if (user.Address.currentAddress.line1 !== undefined) {
+                console.log(newIndex, "---------")
+                this.setState({ activeIndex: newIndex })
+            }
+        }
+        if (index === 3) {
+            if (user.fname !== undefined && user.lname !== undefined && user.faname !== undefined) {
+                this.setState({ activeIndex: newIndex })
+            }
+        }
+        if (index === 4) {
+            if (user.fname !== undefined && user.lname !== undefined && user.faname !== undefined) {
+                this.setState({ activeIndex: newIndex })
+            }
+        }
+        if (newIndex === 5) {
+            if (user.fname !== undefined && user.lname !== undefined && user.faname !== undefined) {
+                this.setState({ activeIndex: newIndex })
+            }
+        }
+
+
     }
 
     handleCheckBox() {
@@ -97,28 +137,57 @@ class Mortgage extends React.Component {
 
     async handleProceed() {
         const { financial, user, expLoan, totalProperty, annualIncome, radio, status } = this.state;
-        let id = `Req${Math.floor(Date.now() / 1000)}`
-        // reqId = id;
-        let expLoans = { ...expLoan, radio }
-        localStorage.setItem("ReqId", id);
-        let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
-        const res = await axios.post("http://localhost:4000/users/", body, )
-            .then(res => {
-                console.log(res.data, "data")
-                return res.data
 
+        if (user.fname !== undefined && user.lname !== undefined && user.faname !== undefined) {
+            console.log(user.fname, "user first name")
+            let id = `Req${('000000' + this.state.totalUser).slice(-5)}`
+            // reqId = id;
+            let expLoans = { ...expLoan, radio }
+            localStorage.setItem("ReqId", id);
+            let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
+            const res = await axios.post("http://localhost:4000/users/", body, )
+                .then(res => {
+                    console.log(res.data, "data")
+                    this.setState({
+                        errorBorder: ''
+                    })
+                    return res.data
+
+                })
+                .catch(e => {
+                    throw new Error(e.response.data);
+                });
+
+            this.props.history.push('/preview')
+
+            console.log("preview", this.props);
+
+            return res;
+        }
+        else {
+            let msg = "please enter mantatory fields"
+
+            this.setState({
+                errorMsg: msg,
+                errorBorder: 'rgb(247, 12, 12)'
+            })
+        }
+
+    }
+    componentDidMount() {
+        const res = axios.get("http://localhost:4000/users/")
+            .then(res => {
+                console.log(res.data);
+                this.setState({
+                    totalUser: res.data.length
+                })
+                return res.data
             })
             .catch(e => {
                 throw new Error(e.response.data);
             });
-
-        this.props.history.push('/preview', id)
-
-        console.log("preview", this.props);
-
         return res;
     }
-
 
     handleGender = (e, { value }) => {
         console.log(value);
@@ -468,7 +537,7 @@ class Mortgage extends React.Component {
                     <Col className="same-row">
                         <div className="name-space">
                             <div className="name-wd" >
-                                Address line 1:
+                                AddressLine1:
         </div >
                             <div className="ui input"><input type="text" name='ptline1' onChange={(e) => this.handlePtAddress(e)}
                                 // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline1 : ''}
@@ -477,7 +546,7 @@ class Mortgage extends React.Component {
 
                         <div className="name-space">
                             <div className="name-wd">
-                                Address line 2:
+                                Addressline2:
         </div >
                             <div className="ui input"><input type="text" name='ptline2' onChange={(e) => this.handlePtAddress(e)}
                                 // value={(this.state.user.address && this.state.user.address.permanentAddress) ? this.state.user.address.permanentAddress.ptline2 : ''}
@@ -564,7 +633,7 @@ class Mortgage extends React.Component {
             <div style={{ display: 'flex' }}>
                 <div className="name-space">
                     <div className="name-wd" >
-                        LiabilityType:
+                        LiabilityType{this.state.ifLiability && <sup style={{ color: 'red' }}>*</sup>}:
                             </div >
                     <Select style={{ height: '20px' }}
                         clearable={true}
@@ -580,7 +649,7 @@ class Mortgage extends React.Component {
                 <div className="name-space">
                     <div className="name-wd" style={{ marginTop: '-1px' }}>
                         Remaining
-                        Value:
+                        Value{this.state.ifLiability && <sup style={{ color: 'red' }}>*</sup>}:
                             </div >
                     <div className="ui input" ><input type="text" style={{ height: '38px' }}
                         ref={el => this.inputTitle = el}
@@ -592,7 +661,7 @@ class Mortgage extends React.Component {
                 <div className="name-space">
                     <div className="name-wd" style={{ marginTop: '-1px' }}>
                         Remaining
-                        Tenure:
+                        Tenure{this.state.ifLiability && <sup style={{ color: 'red' }}>*</sup>}:
                         (months)
                             </div >
                     <div className="ui input" ><input type="text" style={{ height: '38px' }}
@@ -627,438 +696,457 @@ class Mortgage extends React.Component {
 
 
                 <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px', marginTop: '25px' }}>
-                    <Accordion styled className="acc-m">
-                        <Accordion.Title
-                            active={activeIndex === 0}
-                            index={0}
-                            onClick={this.handleClick}
-                        >
-                            <Icon name='dropdown' />
-                            Enter your personal details
+                    <form>
+
+
+                        <Accordion styled className="acc-m">
+                            <Accordion.Title
+                                active={activeIndex === 0}
+                                index={0}
+                                onClick={this.handleClick}
+                            >
+                                <Icon name='dropdown' />
+                                Enter your personal details
         </Accordion.Title>
-                        <Accordion.Content active={activeIndex === 0}>
+                            <Accordion.Content active={activeIndex === 0}>
 
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            FirstName:
-                            </div >
-                                        <div className="ui input"><input type="text" name="fname" onChange={(e) => this.handleOnChange(e)} placeholder="firstName" value={this.state.user.fname && this.state.user.fname} /></div>
-                                    </div>
-
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            LastName:
-                            </div >
-                                        <div className="ui input"><input type="text"
-                                            name="lname" onChange={(e) => this.handleOnChange(e)}
-                                            value={this.state.user.lname && this.state.user.lname}
-                                            placeholder="lastName" /></div>
-                                    </div>
-
-
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            FatherName:
-                            </div >
-                                        <div className="ui input"><input type="text"
-                                            name="faName" onChange={(e) => this.handleOnChange(e)}
-                                            value={this.state.user.faname && this.state.user.faname}
-                                            placeholder="Father Name" /></div>
-                                    </div>
-
-                                </Col></Row>
-
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            DOB:
-                            </div >
-                                        <div className="ui input"><input type="date"
-                                            name="age" onBlur={(e) => this.handleOnChange(e)} value={this.state.user.age}
-
-                                            placeholder="age" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            MobileNo:
-                            </div >
-                                        <div className="ui input"><input type="number"
-                                            name="mobileNo" onChange={(e) => this.handleOnChange(e)} value={this.state.user.mobileNo} placeholder=" MobileNo" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            Email:
-                            </div >
-                                        <div className="ui input"><input type="text"
-                                            name="emailId" onChange={(e) => this.handleOnChange(e)} value={this.state.user.emailId} placeholder=" email" /></div>
-                                    </div>
-                                </Col>
-                            </Row>
-
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            Gender:
-                            </div >
-                                        <Dropdown
-                                            onChange={this.handleGender}
-                                            options={options}
-                                            placeholder='select'
-                                            selection={true}
-                                            value={value}
-                                        />
-
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            PanNo:
-                            </div >
-                                        <div className="ui input"><input type="text"
-                                            name="panNo:" onChange={(e) => this.handleOnChange(e)} placeholder=" PanNo:"
-                                            value={this.state.user.panNo}
-                                        /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            AadharNo:
-                            </div >
-                                        <div className="ui input"><input type="text"
-                                            name="AadharNo" onChange={(e) => this.handleOnChange(e)} placeholder=" AadharNo"
-                                            value={this.state.user.AadharNo}
-                                        /></div>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            Occupation:
-                            </div >
-                                        <Dropdown
-                                            onChange={this.handleOccup}
-                                            options={employee}
-                                            placeholder='Choose an option'
-                                            selection
-                                            value={value}
-                                        />
-
-                                    </div>
-                                    <div className="name-space" style={{ marginLeft: '40px' }}>
-                                        <div className="name-wd">
-                                            Company:
-                                            </div >
-                                        <div className="ui input" ><input type="text"
-                                            name="company:" onChange={(e) => this.handleOnChange(e)} placeholder=" company"
-                                            value={this.state.user.company}
-                                        />
-                                        </div>
-                                    </div>
-
-                                </Col>
-                            </Row>
-                        </Accordion.Content>
-                    </Accordion>
-                    <Accordion styled className="acc-m">
-                        <Accordion.Title
-                            active={activeIndex === 1}
-                            index={1}
-                            onClick={this.handleClick}
-                        >
-                            <Icon name='dropdown' />
-                            Address
-        </Accordion.Title>
-                        <Accordion.Content active={activeIndex === 1}>
-                            <div>
-                                <p>
-                                    Current Address
-                        </p>
-                            </div>
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            Address line 1:
-        </div >
-                                        <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleCtAddress(e)}
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line1 : ''}
-                                            placeholder="Address line 1" /></div>
-                                    </div>
-
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            Address line 2:
-        </div >
-                                        <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleCtAddress(e)}
-                                            // value={this.state.user.Address.line2}
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line2 : ''}
-                                            placeholder="Address line 2" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            LandMark:
-        </div >
-                                        <div className="ui input"><input type="text" name='landmark'
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.landmark : ''}
-                                            // value={this.state.user.Address.landmark}
-                                            onChange={(e) => this.handleCtAddress(e)}
-                                            placeholder="LandMark" /></div>
-                                    </div>
-                                </Col></Row>
-
-
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            City:
-        </div >
-                                        <div className="ui input"><input type="text" name="city"
-                                            onChange={(e) => this.handleCtAddress(e)}
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.city : ''}
-                                            // value={this.state.user.Address.city}
-                                            placeholder="City" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            State:
-        </div >
-                                        <div className="ui input"><input type="text"
-                                            onChange={(e) => this.handleCtAddress(e)}
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.state : ''}
-                                            // value={this.state.user.Address.state}
-                                            name="state"
-                                            placeholder="State" /></div>
-                                    </div>
-                                    <div className="name-space">
-                                        <div className="name-wd">
-                                            Country:
-        </div >
-                                        <div className="ui input"><input type="text"
-                                            name="country"
-                                            onChange={(e) => this.handleCtAddress(e)}
-                                            // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.country : ''}
-                                            // value={this.state.user.Address.country}
-                                            placeholder=" Country" /></div>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <div className="ui checkbox top-align" >
-                                <input type="checkbox" tabIndex="0" value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
-                                <label>Permanent address is as same as current address</label>
-                            </div>
-
-                            {!this.state.sameAddr && PermanentData}
-                        </Accordion.Content>
-                    </Accordion>
-                    <Accordion styled className="acc-m">
-                        <Accordion.Title
-                            active={activeIndex === 2}
-                            index={2}
-                            onClick={this.handleClick}
-                        >
-                            <Icon name='dropdown' />
-                            Financial Details
-        </Accordion.Title>
-                        <Accordion.Content active={activeIndex === 2}>
-                            <Row >
-                                <Col className="same-row">
-
-                                    <div className="name-space" style={{ marginBottom: '15px' }}>
-                                        <div className="name-wd">
-                                            Income:
-                                         </div >
-                                        <div className="ui input"><input type="text" placeholder="Annual Income" onChange={(e) => this.handleIncome(e)} /></div>
-                                    </div>
-
-
-                                </Col></Row>
-                            <Row>
-                                <Col>
-                                    <div style={{ display: 'flex' }}>
-                                        <div className="ui checkbox top-align" >
-                                            <input type="checkbox" tabIndex="0" value={this.state.ifLiability} onChange={() => this.handleLiability()} />
-                                            <label>If any Liabilities:</label>
-                                        </div>
-                                        <div style={{ marginTop: '-5px' }}>
-                                            {this.state.ifLiability && <div className="name-space">
-                                                <div className="name-wd">
-                                                    BankName:
-                                         </div >
-                                                <div className="ui input"><input type="text" name="bankName"
-                                                    onChange={(e) => this.handleOnLiability(e)}
-                                                    ref={el => this.inputBank = el}
-                                                    value={this.state.liability.bankName}
-                                                    placeholder="Bank Name" /></div>
-                                            </div>}
-                                        </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col style={{ marginTop: '10px' }}>
-                                    {this.state.ifLiability && liability}
-                                    {this.state.tabOpen && lib}
-                                </Col>
-                            </Row>
-                        </Accordion.Content>
-                    </Accordion>
-
-                    <Accordion styled className="acc-m">
-                        <Accordion.Title
-                            active={activeIndex === 3}
-                            index={3}
-                            onClick={this.handleClick}
-                        >
-                            <Icon name='dropdown' />
-                            Property Details:
-        </Accordion.Title>
-                        <Accordion.Content active={activeIndex === 3}>
-                            <Row >
-                                <Col className="same-row">
-                                    <form className='same-row'>
+                                <Row >
+                                    <Col className="same-row">
                                         <div className="name-space">
                                             <div className="name-wd" >
-                                                AssetType:
+                                                FirstName <sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                            <Dropdown
-                                                placeholder='Select Type'
-                                                onChange={this.handleProperty}
-                                                selection
-                                                options={AssetType}
-                                                value={value}
-                                            />
+                                            <div className="ui input"><input type="text"
+                                                style={{ borderColor: this.state.errorBorder ? this.state.errorBorder : '' }}
+                                                name="fname" onChange={(e) => this.handleOnChange(e)}
+                                                placeholder="firstName"
+                                                defaultValue={this.state.user.fname && this.state.user.fname} required /></div>
                                         </div>
 
                                         <div className="name-space">
                                             <div className="name-wd">
-                                                AssetValue:
+                                                LastName<sup style={{ color: 'red' }}>*</sup>:
                             </div >
                                             <div className="ui input"><input type="text"
-                                                ref={el => this.propValue = el}
-                                                name="AssetValue" onChange={(e) => this.handleAssetVAlue(e)}
-                                                placeholder=" asset value" /></div>
+                                                name="lname" onChange={(e) => this.handleOnChange(e)}
+                                                value={this.state.user.lname && this.state.user.lname}
+                                                placeholder="lastName" required /></div>
                                         </div>
-                                        <div>
-                                            <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '100px', marginTop: '10px' }} onClick={() => this.show()}>Upload Document</Button>
-                                            {modal}
+
+
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                FatherName<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="text"
+                                                name="faName" onChange={(e) => this.handleOnChange(e)}
+                                                value={this.state.user.faname && this.state.user.faname}
+                                                placeholder="Father Name" required /></div>
                                         </div>
-                                        {/* <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} /> */}
 
-                                    </form>
+                                    </Col></Row>
 
-                                </Col></Row>
-                            <Row>
-                                <Col>
-                                    {this.state.tab && assetTab}
-                                </Col>
-                            </Row>
-                        </Accordion.Content>
-                    </Accordion>
-                    <Accordion styled className="acc-m">
-                        <Accordion.Title
-                            active={activeIndex === 4}
-                            index={4}
-                            onClick={this.handleClick}
-                        >
-                            <Icon name='dropdown' />
-                            Expected Loan amount
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                DOB<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="date"
+                                                name="age" onBlur={(e) => this.handleOnChange(e)} value={this.state.user.age}
+
+                                                placeholder="age" required /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                MobileNo<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="number"
+                                                name="mobileNo" onChange={(e) => this.handleOnChange(e)} value={this.state.user.mobileNo} placeholder=" MobileNo"
+                                                required
+                                            /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                Email<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="text"
+                                                name="emailId" onChange={(e) => this.handleOnChange(e)} value={this.state.user.emailId} placeholder=" email"
+                                                required
+                                            /></div>
+                                        </div>
+                                    </Col>
+                                </Row>
+
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                Gender<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <Dropdown
+                                                onChange={this.handleGender}
+                                                options={options}
+                                                placeholder='select'
+                                                selection={true}
+                                                value={value}
+                                                required
+                                            />
+
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                PanNo<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="text"
+                                                name="panNo:" onChange={(e) => this.handleOnChange(e)} placeholder=" PanNo:"
+                                                value={this.state.user.panNo}
+                                                required
+                                            /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                AadharNo<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="text"
+                                                name="AadharNo" onChange={(e) => this.handleOnChange(e)} placeholder=" AadharNo"
+                                                value={this.state.user.AadharNo}
+                                                required
+                                            /></div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                Occupation<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <Dropdown
+                                                onChange={this.handleOccup}
+                                                options={employee}
+                                                placeholder='Choose an option'
+                                                selection
+                                                value={value}
+                                                required
+                                            />
+
+                                        </div>
+                                        <div className="name-space" style={{ marginLeft: '40px' }}>
+                                            <div className="name-wd">
+                                                Company<sup style={{ color: 'red' }}>*</sup>:
+                                            </div >
+                                            <div className="ui input" ><input type="text"
+                                                name="company:" onChange={(e) => this.handleOnChange(e)} placeholder=" company"
+                                                value={this.state.user.company}
+                                                required
+                                            />
+                                            </div>
+                                        </div>
+
+                                    </Col>
+                                </Row>
+                                <p style={{ color: 'red', marginLeft: '35px', marginTop: '10px' }}>
+                                    {this.state.errorMsg}
+                                </p>
+                            </Accordion.Content>
+                        </Accordion>
+                        <Accordion styled className="acc-m">
+                            <Accordion.Title
+                                active={activeIndex === 1}
+                                index={1}
+                                onClick={this.handleClick}
+                            >
+                                <Icon name='dropdown' />
+                                Address
         </Accordion.Title>
-                        <Accordion.Content active={activeIndex === 4}>
-                            <Row >
-                                <Col className="same-row">
-                                    <div className="name-spaced">
-                                        <div className="name-wd" >
-                                            Principle:
+                            <Accordion.Content active={activeIndex === 1}>
+                                <div>
+                                    <p>
+                                        Current Address
+                        </p>
+                                </div>
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                AddressLine1<sup style={{ color: 'red' }}>*</sup>:
+        </div >
+                                            <div className="ui input"><input type="text" name='line1' onChange={(e) => this.handleCtAddress(e)}
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line1 : ''}
+                                                placeholder="Address line 1" /></div>
+                                        </div>
+
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                AddressLine2:
+        </div >
+                                            <div className="ui input"><input type="text" name='line2' onChange={(e) => this.handleCtAddress(e)}
+                                                // value={this.state.user.Address.line2}
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.line2 : ''}
+                                                placeholder="Address line 2" /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                LandMark:
+        </div >
+                                            <div className="ui input"><input type="text" name='landmark'
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.landmark : ''}
+                                                // value={this.state.user.Address.landmark}
+                                                onChange={(e) => this.handleCtAddress(e)}
+                                                placeholder="LandMark" /></div>
+                                        </div>
+                                    </Col></Row>
+
+
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                City<sup style={{ color: 'red' }}>*</sup>:
+        </div >
+                                            <div className="ui input"><input type="text" name="city"
+                                                onChange={(e) => this.handleCtAddress(e)}
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.city : ''}
+                                                // value={this.state.user.Address.city}
+                                                placeholder="City" /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                State<sup style={{ color: 'red' }}>*</sup>:
+        </div >
+                                            <div className="ui input"><input type="text"
+                                                onChange={(e) => this.handleCtAddress(e)}
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.state : ''}
+                                                // value={this.state.user.Address.state}
+                                                name="state"
+                                                placeholder="State" /></div>
+                                        </div>
+                                        <div className="name-space">
+                                            <div className="name-wd">
+                                                Country<sup style={{ color: 'red' }}>*</sup>:
+        </div >
+                                            <div className="ui input"><input type="text"
+                                                name="country"
+                                                onChange={(e) => this.handleCtAddress(e)}
+                                                // value={(this.state.user.address && this.state.user.address.currentAddress) ? this.state.user.address.currentAddress.country : ''}
+                                                // value={this.state.user.Address.country}
+                                                placeholder=" Country" /></div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <div className="ui checkbox top-align" >
+                                    <input type="checkbox" tabIndex="0" value={this.state.sameAddr} onChange={() => this.handleCheckBox()} />
+                                    <label>Permanent address is as same as current address</label>
+                                </div>
+
+                                {!this.state.sameAddr && PermanentData}
+                            </Accordion.Content>
+                        </Accordion>
+                        <Accordion styled className="acc-m">
+                            <Accordion.Title
+                                active={activeIndex === 2}
+                                index={2}
+                                onClick={this.handleClick}
+                            >
+                                <Icon name='dropdown' />
+                                Financial Details
+        </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 2}>
+                                <Row >
+                                    <Col className="same-row">
+
+                                        <div className="name-space" style={{ marginBottom: '15px' }}>
+                                            <div className="name-wd">
+                                                Income<sup style={{ color: 'red' }}>*</sup>:
+                                         </div >
+                                            <div className="ui input"><input type="text" placeholder="Annual Income" onChange={(e) => this.handleIncome(e)} /></div>
+                                        </div>
+
+
+                                    </Col></Row>
+                                <Row>
+                                    <Col>
+                                        <div style={{ display: 'flex' }}>
+                                            <div className="ui checkbox top-align" >
+                                                <input type="checkbox" tabIndex="0" value={this.state.ifLiability} onChange={() => this.handleLiability()} />
+                                                <label>If any Liabilities:</label>
+                                            </div>
+                                            <div style={{ marginTop: '-5px' }}>
+                                                {this.state.ifLiability && <div className="name-space">
+                                                    <div className="name-wd">
+                                                        BankName{this.state.ifLiability && <sup style={{ color: 'red' }}>*</sup>}:
+                                         </div >
+                                                    <div className="ui input"><input type="text" name="bankName"
+                                                        onChange={(e) => this.handleOnLiability(e)}
+                                                        ref={el => this.inputBank = el}
+                                                        value={this.state.liability.bankName}
+                                                        placeholder="Bank Name" /></div>
+                                                </div>}
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={{ marginTop: '10px' }}>
+                                        {this.state.ifLiability && liability}
+                                        {this.state.tabOpen && lib}
+                                    </Col>
+                                </Row>
+                            </Accordion.Content>
+                        </Accordion>
+
+                        <Accordion styled className="acc-m">
+                            <Accordion.Title
+                                active={activeIndex === 3}
+                                index={3}
+                                onClick={this.handleClick}
+                            >
+                                <Icon name='dropdown' />
+                                Property Details:
+        </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 3}>
+                                <Row >
+                                    <Col className="same-row">
+                                        <form className='same-row'>
+                                            <div className="name-space">
+                                                <div className="name-wd" >
+                                                    AssetType<sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                        <div className="ui input"><input type="text" placeholder="principle"
-                                            name="principle"
-                                            value={this.state.expLoan.principle}
-                                            onChange={(e) => { this.handleLoan(e) }}
-                                        /></div>
+                                                <Dropdown
+                                                    placeholder='Select Type'
+                                                    onChange={this.handleProperty}
+                                                    selection
+                                                    options={AssetType}
+                                                    value={value}
+                                                />
+                                            </div>
 
-                                    </div>
-
-                                    <div className="name-spaced">
-                                        <div className="name-wd">
-                                            Tenure:
-                                            (months)
+                                            <div className="name-space">
+                                                <div className="name-wd">
+                                                    AssetValue<sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                        <div className="ui input"><input type="text"
-                                            name="tenure"
-                                            value={this.state.expLoan.tenure}
-                                            onChange={(e) => { this.handleLoan(e) }}
-                                            placeholder="Tenure" /></div>
-                                    </div>
-                                    <div className="name-spaced">
-                                        <div className="name-wd">
-                                            Intrest(%):
+                                                <div className="ui input"><input type="text"
+                                                    ref={el => this.propValue = el}
+                                                    name="AssetValue" onChange={(e) => this.handleAssetVAlue(e)}
+                                                    placeholder=" asset value" /></div>
+                                            </div>
+                                            <div>
+                                                <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '100px', marginTop: '10px' }} onClick={() => this.show()}>Upload Document</Button>
+                                                {modal}
+                                            </div>
+                                            {/* <Icon name='add circle' className="ml-auto" style={{ marginTop: '15px' }} size="large" onClick={this.addAsset} /> */}
+
+                                        </form>
+
+                                    </Col></Row>
+                                <Row>
+                                    <Col>
+                                        {this.state.tab && assetTab}
+                                    </Col>
+                                </Row>
+                            </Accordion.Content>
+                        </Accordion>
+                        <Accordion styled className="acc-m">
+                            <Accordion.Title
+                                active={activeIndex === 4}
+                                index={4}
+                                onClick={this.handleClick}
+                            >
+                                <Icon name='dropdown' />
+                                Expected Loan amount
+        </Accordion.Title>
+                            <Accordion.Content active={activeIndex === 4}>
+                                <Row >
+                                    <Col className="same-row">
+                                        <div className="name-spaced">
+                                            <div className="name-wd" >
+                                                Principal<sup style={{ color: 'red' }}>*</sup>:
+                            </div >
+                                            <div className="ui input"><input type="text" placeholder="principal"
+                                                name="principle"
+                                                value={this.state.expLoan.principle}
+                                                onChange={(e) => { this.handleLoan(e) }}
+                                            /></div>
+
+                                        </div>
+
+                                        <div className="name-spaced">
+                                            <div className="name-wd">
+                                                Tenure<sup style={{ color: 'red' }}>*</sup>:
+                                                (months)
+                            </div >
+                                            <div className="ui input"><input type="text"
+                                                name="tenure"
+                                                value={this.state.expLoan.tenure}
+                                                onChange={(e) => { this.handleLoan(e) }}
+                                                placeholder="Tenure" /></div>
+                                        </div>
+                                        <div className="name-spaced">
+                                            <div className="name-wd">
+                                                Interest(%)<sup style={{ color: 'red' }}>*</sup>:
 
                             </div >
-                                        <div className="ui input"><input type="text" placeholder="Intrest"
-                                            name="intrest"
-                                            value={this.state.expLoan.intrest}
-                                            onChange={(e) => { this.handleLoan(e) }} /></div>
-                                    </div>
+                                            <div className="ui input"><input type="text" placeholder="Interest"
+                                                name="intrest"
+                                                value={this.state.expLoan.intrest}
+                                                onChange={(e) => { this.handleLoan(e) }} /></div>
+                                        </div>
 
 
 
-                                </Col>
-                                <Col className="same-row" style= {{marginLeft:'-37px'}}>
-                                    <div className="name-space">
-                                        <div className="name-wd" >
-                                            Property:
+                                    </Col>
+                                    <Col className="same-row" style={{ marginLeft: '-37px' }}>
+                                        <div className="name-space">
+                                            <div className="name-wd" >
+                                                Property<sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                        <Dropdown
-                                            onChange={this.propertySelect}
-                                            options={property}
-                                            placeholder='select'
-                                            selection={true}
-                                            value={value}
-                                        />
-                                    </div>
-                                    <div className="name-space">
+                                            <Dropdown
+                                                onChange={this.propertySelect}
+                                                options={property}
+                                                placeholder='select'
+                                                selection={true}
+                                                value={value}
+                                            />
+                                        </div>
+                                        <div className="name-space">
 
 
-                                        <div className="name-wd">
-                                            StartDate:
+                                            <div className="name-wd">
+                                                StartDate<sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                        <div className="ui input"><input type="date"
-                                            name="StartDate" onBlur={(e) => this.handleOnChange(e)} defaultValue={this.state.expLoan.startDate}
-                                            placeholder="startDate" /></div>
-                                    </div>
-                                    <div className="name-space" >
-                                        <Radio
-                                            label='Flexible'
-                                            name='flexible'
-                                            value='flexible'
-                                            checked={this.state.value === 'flexible'}
-                                            onChange={this.handleRadio}
-                                            className='radio-space name-wd '
-                                        />
-                                        <Radio
-                                            label='Fixed'
-                                            name='fixed'
-                                            value='fixed'
-                                            checked={this.state.value === 'fixed'}
-                                            onChange={this.handleRadio}
-                                            className='radio-space name-wd '
-                                        />
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Accordion.Content>
-                    </Accordion>
-                    <Row>
+                                            <div className="ui input"><input type="date"
+                                                name="StartDate" onBlur={(e) => this.handleOnChange(e)} defaultValue={this.state.expLoan.startDate}
+                                                placeholder="startDate" /></div>
+                                        </div>
+                                        <div className="name-space" >
+                                            <Radio
+                                                label='Flexible'
+                                                name='flexible'
+                                                value='flexible'
+                                                checked={this.state.value === 'flexible'}
+                                                onChange={this.handleRadio}
+                                                className='radio-space name-wd '
+                                            />
+                                            <Radio
+                                                label='Fixed'
+                                                name='fixed'
+                                                value='fixed'
+                                                checked={this.state.value === 'fixed'}
+                                                onChange={this.handleRadio}
+                                                className='radio-space name-wd '
+                                            />
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Accordion.Content>
+                        </Accordion>
+                        <Row>
 
-                        <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '-70%' }} onClick={() => this.handleProceed()}>Save</Button>
-                        <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '250px' }} onClick={() => this.handleProceed()}>Proceed</Button>
-                    </Row>
-
+                            <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '-70%' }} onClick={() => this.handleProceed()}>Save</Button>
+                            <Button className="ml-auto" style={{ backgroundColor: 'green', borderColor: 'green', marginRight: '250px' }} onClick={() => this.handleProceed()}>Proceed</Button>
+                        </Row>
+                    </form>
                 </Paper>
             </div>
         )

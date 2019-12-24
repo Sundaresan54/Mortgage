@@ -18,21 +18,11 @@ class PaymentScheduler extends React.Component {
             open: false,
             currentData: [],
             paid: false,
-            bgColor: '',
-            selectedRow: -1,
             indexValue: -1,
-            disableRow: false
 
         }
     }
 
-
-    // componentDidMount(){
-    //     const res = axios.get(`http://localhost:4000/users/${id}`)
-    //     .then(res =>{
-    //         user: res.data
-    //     })
-    // }
     searchKey = (e) => {
         console.log("hello", e.target.value)
         let val = e.target.value
@@ -62,11 +52,9 @@ class PaymentScheduler extends React.Component {
         const id = this.state.user.id;
         console.log(this.state.user, "user data current")
         let i = this.state.indexValue
-        let property = this.state.emiSchedule;
-        console.log(property, "beforeeeeeeeeeeeeee")
-        property[i]["paymentMode"] = this.state.currentData.paymentType
-        property[i]["ctDate"] = this.state.currentData.ctDate
-        console.log(property, "afterrrrrrr")
+        let property = this.state.user.emiScheduler;
+        property[i]["paymentMode"] = this.state.currentData.paymentType;
+        property[i]["ctDate"] = this.state.currentData.ctDate;
         this.setState({
             open: false,
             emiSchedule: property,
@@ -95,84 +83,96 @@ class PaymentScheduler extends React.Component {
 
     async fetchKey() {
 
-        const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
-            .then(res => {
-                console.log(res.data, "data")
-                this.setState({
-                    user: res.data
-                }, () => {
-                    console.log(res.data, "all dattaaaaa")
-                })
-                let cal = (res.data.expLoan.principle);
-                let tenure = Number(res.data.expLoan.tenure);
-                let interest = Number(res.data.expLoan.interest);
-                let intr = Number(interest / (12 * 100))
-                let r = 1 + intr;
-                let e = Math.pow(r, tenure)
-                let finalEmi = e / (e - 1)
-                let emi = Math.round(cal * intr * finalEmi)
-                this.setState({
-                    emi: emi,
-                    tenure: tenure,
-                    interest: intr
+        if (this.state.search !== '') {
+            console.log("inside fetch method")
+            const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
+                .then(res => {
+                    console.log(res.data, "data")
+                    this.setState({
+                        user: res.data
+                    }, () => {
+                        console.log(res.data, "all dattaaaaa")
+                    })
+                    let cal = (res.data.expLoan.principle);
+                    let tenure = Number(res.data.expLoan.tenure);
+                    let interest = Number(res.data.expLoan.interest);
+                    let intr = Number(interest / (12 * 100))
+                    let r = 1 + intr;
+                    let e = Math.pow(r, tenure)
+                    let finalEmi = e / (e - 1)
+                    let emi = Math.round(cal * intr * finalEmi)
+                    this.setState({
+                        emi: emi,
+                        tenure: tenure,
+                        interest: intr
 
-                })
-                let arr = [];
-                let date = this.state.user.expLoan.startDate.split('-');
-                let day = Number(date[2]);
-                let j = 0;
-                let outstandingBal = 0;
-                console.log("check", outstandingBal, outstandingBal, intr)
-                let yr = Number(date[0]);
-                console.log()
-                let mon = 0;
-                if (cal) {
-                    for (var i = 0; i < tenure; i++) {
-                        let row = {
-                            month: '',
-                            interest: '',
-                            principal: '',
-                            outstandingBal: '',
-                            emi: ''
+                    })
+                    let arr = [];
+                    let date = this.state.user.expLoan.startDate.split('-');
+                    let day = Number(date[2]);
+                    let j = 0;
+                    let outstandingBal = 0;
+                    console.log("check", outstandingBal, outstandingBal, intr)
+                    let yr = Number(date[0]);
+                    console.log()
+                    let mon = 0;
+                    if (cal) {
+                        for (var i = 0; i < tenure; i++) {
+                            let row = {
+                                month: '',
+                                interest: '',
+                                principal: '',
+                                outstandingBal: '',
+                                emi: ''
+                            }
+                            if (i === 0) {
+                                mon = Number(date[1]);
+                                outstandingBal = cal
+                                console.log(outstandingBal, "iiiiii")
+                            }
+                            else {
+                                mon = mon + 1;
+                            }
+                            row.month = day + '-' + mon + '-' + yr;
+                            row.emi = emi;
+                            let a = (intr * outstandingBal);
+                            let b = emi - a;
+                            row.interest = Math.round(a);
+                            row.principal = Math.round(b);
+                            outstandingBal = outstandingBal - (emi - Math.floor(a));
+                            outstandingBal = Math.round(outstandingBal);
+                            console.log(outstandingBal, "before 0")
+                            outstandingBal = (outstandingBal < 0) ? 0 : outstandingBal;
+                            row.outstandingBal = outstandingBal;
+                            // console.log('int:' + Math.round(a), 'prin:' + b, 'outstanding bal: ' + outstandingBal, 'emi : ', a + b, "-----")
+                            console.log('EMI :', emi, 'INT:', Math.round(a), 'Prin:', (emi - a), (emi - Math.floor(a)), 'Balance:', outstandingBal);
+                            if (mon >= 12) {
+                                mon = 0;
+                                yr = yr + 1
+                            }
+                            arr.push(row);
+                            j++;
                         }
-                        if (i === 0) {
-                            mon = Number(date[1]);
-                            outstandingBal = cal
-                            console.log(outstandingBal, "iiiiii")
-                        }
-                        else {
-                            mon = mon + 1;
-                        }
-                        row.month = day + '-' + mon + '-' + yr;
-                        row.emi = emi;
-                        let a = (intr * outstandingBal);
-                        let b = emi - a;
-                        row.interest = Math.round(a);
-                        row.principal = Math.round(b);
-                        outstandingBal = outstandingBal - (emi - Math.floor(a));
-                        outstandingBal = Math.round(outstandingBal);
-                        console.log(outstandingBal, "before 0")
-                        outstandingBal = (outstandingBal < 0) ? 0 : outstandingBal;
-                        row.outstandingBal = outstandingBal;
-                        // console.log('int:' + Math.round(a), 'prin:' + b, 'outstanding bal: ' + outstandingBal, 'emi : ', a + b, "-----")
-                        console.log('EMI :', emi, 'INT:', Math.round(a), 'Prin:', (emi - a), (emi - Math.floor(a)), 'Balance:', outstandingBal);
-                        if (mon >= 12) {
-                            mon = 0;
-                            yr = yr + 1
-                        }
-                        arr.push(row);
-                        j++;
                     }
-                }
-                this.setState({
-                    emiSchedule: arr
+                    this.setState({
+                        emiSchedule: arr
+                    })
+                    this.search.value = "";
                 })
-                this.search.value = "";
-            })
-            .catch(e => {
-                throw new Error(e.response.data);
-            });
-        return res;
+                .catch(e => {
+                    window.alert("Invalid request number")
+                    this.search.value = "";
+
+
+                    // throw new Error(e.response.data);
+                });
+            return res;
+        }
+        else {
+            window.alert("please enter valid Request number")
+
+        }
+
     }
 
 
@@ -296,7 +296,7 @@ class PaymentScheduler extends React.Component {
                                             cursor: 'pointer',
                                             textDecoration: 'none'
                                         }} onClick={() => this.show(data, i)}
-                                        disabled={this.state.user.emiScheduler[i].paymentMode !== undefined ? this.state.disableRow : false} >
+                                        disabled={this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
                                         <Table.Cell>{i + 1}</Table.Cell>
                                         <Table.Cell >{data.month}</Table.Cell>
                                         <Table.Cell>{data.principal}</Table.Cell>
