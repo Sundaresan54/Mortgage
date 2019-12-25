@@ -74,13 +74,24 @@ class Mortgage extends React.Component {
         }
         if (index === 1) {
             console.log("hello", index)
-            if (user.fname !== undefined) {
-                console.log('alert')
+            if ((user.fname !== undefined  &&  user.fname !=='') && (user.lname !== undefined &&  user.lname !=='') 
+            &&(user.mobileNo!==undefined && user.mobileNo!=='') && (user.AadharNo!==undefined&&user.AadharNo!=='') 
+            && (user.emailId!==undefined&&user.emailId!=='') && (user.gender!==undefined && user.gener!=='')
+            &&(user.age!==undefined&&user.age!=='')) {
+                console.log('alert',user.AadharNo,this.state.user.panNo)
 
-                this.setState({ activeIndex: newIndex })
+                this.setState({ activeIndex: newIndex,
+                    errorMsg: '' })
             }
             else {
-                console.log("jhgjhghj", user.fname)
+              
+                    let msg = "Please enter mantatory(*) fields"
+                    console.log('alert',user.AadharNo,user.panNo)
+                    this.setState({
+                        errorMsg: msg,
+                        //  errorBorder: 'rgb(247, 12, 12)'
+                    })
+                
             }
         }
         if (index === 2) {
@@ -123,7 +134,8 @@ class Mortgage extends React.Component {
         let user = this.state.user;
         user[e.target.name] = e.target.value
         this.setState({
-            user: user
+            user: user,
+            
         })
     }
     searchKey = (e) => {
@@ -727,7 +739,7 @@ class Mortgage extends React.Component {
                                             <div className="name-wd">
                                                 LastName<sup style={{ color: 'red' }}>*</sup>:
                             </div >
-                                            <div className="ui input"><input type="text"
+                                            <div className="ui input"><input type="text" style={{ borderColor: this.state.errorBorder ? this.state.errorBorder : '' }}
                                                 name="lname" onChange={(e) => this.handleOnChange(e)}
                                                 value={this.state.user.lname && this.state.user.lname}
                                                 placeholder="lastName" required /></div>
@@ -739,6 +751,7 @@ class Mortgage extends React.Component {
                                                 FatherName<sup style={{ color: 'red' }}>*</sup>:
                             </div >
                                             <div className="ui input"><input type="text"
+                                            style={{ borderColor: this.state.errorBorder ? this.state.errorBorder : '' }}
                                                 name="faName" onChange={(e) => this.handleOnChange(e)}
                                                 value={this.state.user.faname && this.state.user.faname}
                                                 placeholder="Father Name" required /></div>
@@ -754,7 +767,7 @@ class Mortgage extends React.Component {
                             </div >
                                             <div className="ui input"><input type="date"
                                                 name="age" onBlur={(e) => this.handleOnChange(e)} value={this.state.user.age}
-
+                                                style={{ borderColor: this.state.errorBorder ? this.state.errorBorder : '' }}
                                                 placeholder="age" required /></div>
                                         </div>
                                         <div className="name-space">
@@ -799,8 +812,8 @@ class Mortgage extends React.Component {
                                                 PanNo<sup style={{ color: 'red' }}>*</sup>:
                             </div >
                                             <div className="ui input"><input type="text"
-                                                name="panNo:" onChange={(e) => this.handleOnChange(e)} placeholder=" PanNo:"
-                                                value={this.state.user.panNo}
+                                                name="panNo" onChange={(e) => this.handleOnChange(e)} placeholder=" PanNo:"
+                                                defaultValue={this.state.user.panNo}
                                                 required
                                             /></div>
                                         </div>
