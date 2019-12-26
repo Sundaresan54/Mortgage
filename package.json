@@ -24,6 +24,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run client\" \"npm run backend\"",
+    "heroku-postbuild": "concurrently \"npm run client\" \"npm run backend\"",
     "client": "react-scripts start",
     "backend": "node server.js",
     "build": "react-scripts build",
