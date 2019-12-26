@@ -53,12 +53,13 @@
           }
         }
       ],
-      "expLoan": {
+      "expLoans": {
         "principle": "300000",
         "tenure": "24",
         "interest": "11",
         "startDate": "2020-02-01",
-        "propertyType": "Gold"
+        "propertyType": "Gold",
+        "radio": "fixed"
       },
       "id": "000001",
       "status": "Approved",
@@ -68,9 +69,7 @@
           "interest": 2750,
           "principal": 11232,
           "outstandingBal": 288768,
-          "emi": 13982,
-          "paymentMode": "cheque",
-          "ctDate": "2019-12-24"
+          "emi": 13982
         },
         {
           "month": "1-3-2020",
@@ -284,12 +283,13 @@
           "AssetTenure": "12"
         }
       ],
-      "expLoan": {
+      "expLoans": {
         "principle": "250000",
         "tenure": "48",
         "interest": "12",
         "startDate": "2020-02-15",
-        "propertyType": "Car"
+        "propertyType": "Car",
+        "radio": "fixed"
       },
       "totalProperty": [
         {
@@ -354,12 +354,13 @@
           "AssetTenure": "20"
         }
       ],
-      "expLoan": {
+      "expLoans": {
         "principle": "200000",
         "tenure": "48",
         "interest": "11",
         "startDate": "2020-01-01",
-        "propertyType": "House"
+        "propertyType": "House",
+        "radio": "fixed"
       },
       "totalProperty": [
         {
@@ -384,17 +385,6 @@
       ],
       "status": "Pending",
       "id": "000003"
-    },
-    {
-      "user": {},
-      "annualIncome": "",
-      "financial": [],
-      "expLoans": {
-        "radio": ""
-      },
-      "totalProperty": [],
-      "id": "Req00003",
-      "status": "pending"
     }
   ]
 }

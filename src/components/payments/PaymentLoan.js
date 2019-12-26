@@ -112,13 +112,13 @@ class PaymentLoan extends React.Component {
               console.log(user)
               return <Table.Row key={i}>
                 <Table.Cell></Table.Cell>
-                <Table.Cell>{user.id}</Table.Cell>
+                <Table.Cell>Req{user.id}</Table.Cell>
                 <Table.Cell>{user.user.fname}</Table.Cell>
-                <Table.Cell>{user.expLoan.propertyType}</Table.Cell>
-                <Table.Cell>{user.expLoan.principle}</Table.Cell>
-                <Table.Cell>{user.expLoan.tenure}</Table.Cell>
-                <Table.Cell>{user.expLoan.intrest}</Table.Cell>
-                <Table.Cell>{user.expLoan.startDate}</Table.Cell>
+                <Table.Cell>{user.expLoans.propertyType}</Table.Cell>
+                <Table.Cell>{user.expLoans.principle}</Table.Cell>
+                <Table.Cell>{user.expLoans.tenure}</Table.Cell>
+                <Table.Cell>{user.expLoans.intrest}</Table.Cell>
+                <Table.Cell>{user.expLoans.startDate}</Table.Cell>
                 {/* <Table.Cell>{user.status}</Table.Cell> */}
                 <Table.Cell>
 
