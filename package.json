@@ -25,7 +25,6 @@
   "scripts": {
     "start": "react-scripts start",
     "heroku-postbuild": "json-server -p 4000 -w 'users.json'",
-    "dev": "concurrently \"npm run start\" \"npm run backend\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
