@@ -23,8 +23,8 @@
     "@fortawesome/fontawesome-free": "^5.11.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "concurrently \"npm start\" \"npm run backend\"",
+    "start": "concurrently \"npm run client\" \"npm run backend\"",
+    "client": "react-scripts start",
     "backend": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
