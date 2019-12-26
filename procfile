@@ -1,1 +1,1 @@
-web: npm start && json-server -p 4000 -w 'users.json'
+web: npm start
