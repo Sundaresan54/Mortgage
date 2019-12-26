@@ -23,8 +23,8 @@
     "@fortawesome/fontawesome-free": "^5.11.2"
   },
   "scripts": {
-    "start": "json-server -p 4000 -w 'users.json'",
-    "heroku-postbuild": "react-scripts start'",
+    "start": "json-server -p 4000 -w 'users.json' ",
+    "heroku-postbuild": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
