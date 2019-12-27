@@ -1,4 +1,4 @@
-let URL = "http://localhost:4000"
+
 if (process.env.REACT_APP_STAGE === 'development') {
     URL = "http://localhost:4000"
 }
