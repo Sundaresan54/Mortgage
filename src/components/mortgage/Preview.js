@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import { Paper } from '@material-ui/core'
 import { Button } from 'react-bootstrap'
 import axios from 'axios'
+import { URL } from '../../config'
 
 
 
@@ -18,7 +19,7 @@ this.state={
         async componentWillMount() {
             let id =localStorage.getItem("ReqId");
             console.log(this.state.reqId,"khjkhj.kdjhskdhcskhcskdhjkk")
-                const res = await axios.get(`https://my-json-server-deploy.herokuapp.com/users/${id}`, )
+                const res = await axios.get(`${URL}/users/${id}`, )
                     .then(res => {
                         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
                         this.setState({

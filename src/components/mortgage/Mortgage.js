@@ -7,7 +7,8 @@ import { Accordion, Icon, Dropdown, Table, Radio, Select, Modal } from 'semantic
 import { Paper } from '@material-ui/core'
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import './style.css';
-import { exportDefaultSpecifier } from '@babel/types';
+import { URL } from '../../config'
+
 
 class Mortgage extends React.Component {
     constructor(props) {
@@ -226,7 +227,7 @@ class Mortgage extends React.Component {
             let expLoans = { ...expLoan, radio }
             localStorage.setItem("ReqId", id);
             let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
-            const res = await axios.post("https://my-json-server-deploy.herokuapp.com/users/", body, )
+            const res = await axios.post(`${URL}/users/`, body, )
                 .then(res => {
                     console.log(res.data, "data")
                     this.setState({
@@ -258,7 +259,7 @@ class Mortgage extends React.Component {
 
     }
     componentDidMount() {
-        const res = axios.get("https://my-json-server-deploy.herokuapp.com/users/")
+        const res = axios.get(`${URL}/users/`)
             .then(res => {
                 console.log(res.data);
                 this.setState({

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Icon, Dropdown, Table } from 'semantic-ui-react'
-import { async } from 'q';
+import { URL } from '../../config'
 class PaymentLoan extends React.Component {
   constructor() {
     super();
@@ -14,7 +14,7 @@ class PaymentLoan extends React.Component {
   componentDidMount() {
 
     // console.log(this.state.reqId, "khjkhj.kdjhskdhcskhcskdhjkk")
-    const res = axios.get(`https://my-json-server-deploy.herokuapp.com/users/`, )
+    const res = axios.get(`${URL}/users/`, )
       .then(res => {
         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
         this.setState({
@@ -33,7 +33,7 @@ class PaymentLoan extends React.Component {
   async componentWillReceiveProps(userUpdate) {
     let id = userUpdate.id
     let body = userUpdate;
-    const res = await axios.patch(`https://my-json-server-deploy.herokuapp.com/users/${id}`, body)
+    const res = await axios.patch(`${URL}/users/${id}`, body)
       .then(res => {
         console.log(res.data, "patched")
 

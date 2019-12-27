@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Paper } from '@material-ui/core'
 import axios from 'axios'
+import { URL } from '../../config'
 
 import { Icon, Dropdown, Table, Modal, Button } from 'semantic-ui-react'
 import { Form, FormControl } from 'react-bootstrap'
@@ -60,7 +61,7 @@ class PaymentScheduler extends React.Component {
             emiSchedule: property,
             user: { ...this.state.user, emiScheduler: property }
         }, () => {
-            const res = axios.put(`https://my-json-server-deploy.herokuapp.com/users/${id}`, this.state.user)
+            const res = axios.put(`${URL}/users/${id}`, this.state.user)
                 .then(res => {
                     console.log(res.data, "patched")
                 })
@@ -85,7 +86,7 @@ class PaymentScheduler extends React.Component {
 
         if (this.state.search !== '') {
             console.log("inside fetch method")
-            const res = await axios.get(`https://my-json-server-deploy.herokuapp.com/users/${this.state.search}`, )
+            const res = await axios.get(`${URL}/users/${this.state.search}`, )
                 .then(res => {
                     console.log(res.data, "data")
                     this.setState({
