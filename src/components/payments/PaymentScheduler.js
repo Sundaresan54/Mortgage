@@ -60,7 +60,7 @@ class PaymentScheduler extends React.Component {
             emiSchedule: property,
             user: { ...this.state.user, emiScheduler: property }
         }, () => {
-            const res = axios.put(`http://localhost:4000/users/${id}`, this.state.user)
+            const res = axios.put(`https://my-json-server-deploy.herokuapp.com/users/${id}`, this.state.user)
                 .then(res => {
                     console.log(res.data, "patched")
                 })
@@ -85,7 +85,7 @@ class PaymentScheduler extends React.Component {
 
         if (this.state.search !== '') {
             console.log("inside fetch method")
-            const res = await axios.get(`http://localhost:4000/users/${this.state.search}`, )
+            const res = await axios.get(`https://my-json-server-deploy.herokuapp.com/users/${this.state.search}`, )
                 .then(res => {
                     console.log(res.data, "data")
                     this.setState({

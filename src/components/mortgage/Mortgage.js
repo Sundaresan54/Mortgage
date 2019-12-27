@@ -219,14 +219,14 @@ class Mortgage extends React.Component {
     async handleProceed() {
         const { financial, user, expLoan, totalProperty, annualIncome, radio, status } = this.state;
         if ((expLoan.principle !== undefined && expLoan.principle !== '') && (expLoan.tenure !== undefined && expLoan.tenure !== '')
-            && (expLoan.propertyType !== undefined && expLoan.propertyType !== '')  && (expLoan.startDate !== undefined && expLoan.startDate !== '')) {
+            && (expLoan.propertyType !== undefined && expLoan.propertyType !== '') && (expLoan.startDate !== undefined && expLoan.startDate !== '')) {
             console.log("heyyyyyyy")
             let id = `Req${('000000' + this.state.totalUser).slice(-5)}`
 
             let expLoans = { ...expLoan, radio }
             localStorage.setItem("ReqId", id);
             let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
-            const res = await axios.post("http://localhost:4000/users/", body, )
+            const res = await axios.post("https://my-json-server-deploy.herokuapp.com/users/", body, )
                 .then(res => {
                     console.log(res.data, "data")
                     this.setState({
@@ -258,7 +258,7 @@ class Mortgage extends React.Component {
 
     }
     componentDidMount() {
-        const res = axios.get("http://localhost:4000/users/")
+        const res = axios.get("https://my-json-server-deploy.herokuapp.com/users/")
             .then(res => {
                 console.log(res.data);
                 this.setState({

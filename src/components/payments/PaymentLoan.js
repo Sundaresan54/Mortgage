@@ -14,7 +14,7 @@ class PaymentLoan extends React.Component {
   componentDidMount() {
 
     // console.log(this.state.reqId, "khjkhj.kdjhskdhcskhcskdhjkk")
-    const res = axios.get(`http://localhost:4000/users/`, )
+    const res = axios.get(`https://my-json-server-deploy.herokuapp.com/users/`, )
       .then(res => {
         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
         this.setState({
@@ -33,7 +33,7 @@ class PaymentLoan extends React.Component {
   async componentWillReceiveProps(userUpdate) {
     let id = userUpdate.id
     let body = userUpdate;
-    const res = await axios.patch(`http://localhost:4000/users/${id}`, body)
+    const res = await axios.patch(`https://my-json-server-deploy.herokuapp.com/users/${id}`, body)
       .then(res => {
         console.log(res.data, "patched")
 

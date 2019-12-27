@@ -18,7 +18,7 @@ this.state={
         async componentWillMount() {
             let id =localStorage.getItem("ReqId");
             console.log(this.state.reqId,"khjkhj.kdjhskdhcskhcskdhjkk")
-                const res = await axios.get(`http://localhost:4000/users/${id}`, )
+                const res = await axios.get(`https://my-json-server-deploy.herokuapp.com/users/${id}`, )
                     .then(res => {
                         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
                         this.setState({
