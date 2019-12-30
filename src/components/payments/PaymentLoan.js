@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { Icon, Dropdown, Table } from 'semantic-ui-react'
-import { URL } from '../../config'
+import { Data } from '../../config'
 class PaymentLoan extends React.Component {
   constructor() {
     super();
@@ -14,7 +14,7 @@ class PaymentLoan extends React.Component {
   componentDidMount() {
 
     // console.log(this.state.reqId, "khjkhj.kdjhskdhcskhcskdhjkk")
-    const res = axios.get(`${URL}/users/`, )
+    const res = axios.get(`${Data.url}/users/`, )
       .then(res => {
         console.log(res.data, "datakdhjskdjhsdjkhsdhjk")
         this.setState({
@@ -33,7 +33,7 @@ class PaymentLoan extends React.Component {
   async componentWillReceiveProps(userUpdate) {
     let id = userUpdate.id
     let body = userUpdate;
-    const res = await axios.patch(`${URL}/users/${id}`, body)
+    const res = await axios.patch(`${Data.url}/users/${id}`, body)
       .then(res => {
         console.log(res.data, "patched")
 
@@ -111,8 +111,8 @@ class PaymentLoan extends React.Component {
             {this.state.user && this.state.user.map((user, i) => {
               console.log(user)
               return <Table.Row key={i}>
-                <Table.Cell></Table.Cell>
-                <Table.Cell>Req{user.id}</Table.Cell>
+                <Table.Cell>{i + 1}</Table.Cell>
+                <Table.Cell>{user.id}</Table.Cell>
                 <Table.Cell>{user.user.fname}</Table.Cell>
                 <Table.Cell>{user.expLoans.propertyType}</Table.Cell>
                 <Table.Cell>{user.expLoans.principle}</Table.Cell>

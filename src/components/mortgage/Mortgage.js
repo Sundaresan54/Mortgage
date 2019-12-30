@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { withRouter } from 'react-router'
-import { uuid } from 'uuidv4'
 import axios from 'axios'
 import { Accordion, Icon, Dropdown, Table, Radio, Select, Modal } from 'semantic-ui-react'
 import { Paper } from '@material-ui/core'
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import './style.css';
-import { URL } from '../../config'
+import { Data } from '../../config'
 
 
 class Mortgage extends React.Component {
@@ -227,7 +226,7 @@ class Mortgage extends React.Component {
             let expLoans = { ...expLoan, radio }
             localStorage.setItem("ReqId", id);
             let body = { user, annualIncome, financial, expLoans, totalProperty, id, status }
-            const res = await axios.post(`${URL}/users/`, body, )
+            const res = await axios.post(`${Data.url}/users/`, body, )
                 .then(res => {
                     console.log(res.data, "data")
                     this.setState({
@@ -237,7 +236,8 @@ class Mortgage extends React.Component {
 
                 })
                 .catch(e => {
-                    throw new Error(e.response.data);
+                    // throw new Error(e.response.data);
+                    window.alert("data not getting")
                 });
 
             this.props.history.push('/preview')
@@ -259,7 +259,9 @@ class Mortgage extends React.Component {
 
     }
     componentDidMount() {
-        const res = axios.get(`${URL}/users/`)
+
+        console.log(Data.url, "jjjjjx")
+        const res = axios.get(`${Data.url}/users/`)
             .then(res => {
                 console.log(res.data);
                 this.setState({
@@ -268,7 +270,8 @@ class Mortgage extends React.Component {
                 return res.data
             })
             .catch(e => {
-                throw new Error(e.response.data);
+                // throw new Error(e.response.data);
+                window.alert("data not getting")
             });
         return res;
     }

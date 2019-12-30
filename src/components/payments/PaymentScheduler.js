@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Paper } from '@material-ui/core'
 import axios from 'axios'
-import { URL } from '../../config'
+import { Data } from '../../config'
 
 import { Icon, Dropdown, Table, Modal, Button } from 'semantic-ui-react'
 import { Form, FormControl } from 'react-bootstrap'
@@ -15,11 +15,11 @@ class PaymentScheduler extends React.Component {
             tenure: undefined,
             search: '',
             interest: '',
-            emiSchedule: [],
             open: false,
             currentData: [],
             paid: false,
             indexValue: -1,
+            paidEmi: 0
 
         }
     }
@@ -36,10 +36,11 @@ class PaymentScheduler extends React.Component {
 
     close = () => this.setState({ open: false })
     show = (data, i) => {
+
         this.setState({
             open: true,
-            currentData: data,
-            indexValue: i
+            currentData: { ...data, paidEmi: this.state.emi },
+            indexValue: i,
         })
 
     }
@@ -47,29 +48,60 @@ class PaymentScheduler extends React.Component {
         let currentData = { ...this.state.currentData, ctDate: e.target.value }
         this.setState({
             currentData: currentData
-        })
+        }, () => console.log(this.state.currentData, "date..???????????"))
     }
-    paymentDone() {
+    handleOnChangeEmi = (e) => {
+        let currentData = { ...this.state.currentData, paidEmi: e.target.value }
+        this.setState({
+            currentData: currentData
+        }, () => console.log(this.state.currentData, "date..???????????"))
+
+    }
+    async paymentDone() {
         const id = this.state.user.id;
         console.log(this.state.user, "user data current")
         let i = this.state.indexValue
         let property = this.state.user.emiScheduler;
         property[i]["paymentMode"] = this.state.currentData.paymentType;
         property[i]["ctDate"] = this.state.currentData.ctDate;
+        property[i]["paidEmi"] = this.state.currentData.paidEmi;
+        let balEmi = this.state.emi - this.state.currentData.paidEmi
+        property[i]["balEmi"] = balEmi;
         this.setState({
             open: false,
-            emiSchedule: property,
             user: { ...this.state.user, emiScheduler: property }
-        }, () => {
-            const res = axios.put(`${URL}/users/${id}`, this.state.user)
-                .then(res => {
-                    console.log(res.data, "patched")
-                })
-                .catch(e => {
-                    throw new Error(e.response.data);
-                });
-            return res;
         })
+        const res = await axios.put(`${Data.url}/users/${id}`, this.state.user)
+            .then(res => {
+                console.log(res.data, "patched")
+                let a = res.data.user;
+                console.log(a)
+                //  let ctDate =a.emiScheduler.ctDate.split('-');
+                // let ctDay = Number(ctDate[2]);
+                // let ctMon = Number(ctDate[1]);
+                // let ctYr = Number(ctDate[0]);
+                // let ctMonth = ctDay + '-' + ctMon + '-' + ctYr;
+                // CSSConditionRule.log(ctMonth)
+                // let date = this.state.user.expLoans.startDate.split('-');
+                // let day = Number(date[2]);
+                // let mon = Number(date[1]);
+                // let yr = Number(date[0]);
+                // let month = day + '-' + mon + '-' + yr;
+                // if ((this.state.user.emiScheduler.balEmi !== 0)) {
+                //     let diff = ctDay - day
+                //     console.log(diff, "difference")
+                //     let a = 0.1;
+                //     let b = this.state.user.emiScheduler.balEmi * a;
+                //     let c = this.state.user.emiScheduler.balEmi + b;
+                // }
+
+            })
+            .catch(e => {
+                throw new Error(e.response.data);
+            });
+        return res;
+
+
 
     }
     paymentMode = (e, { value }) => {
@@ -81,104 +113,121 @@ class PaymentScheduler extends React.Component {
 
         })
     }
-
-    async fetchKey() {
+    // componentDidUpdate() {
+    //     let id = localStorage.getItem('reqId')
+    //     const res = axios.get(`${Data.url}/users/${id}`)
+    //         .then(res => {
+    //             console.log(res.data, "getting data......")
+    //         }).catch(e => {
+    //             throw new Error(e.response.data);
+    //         });
+    //     return res;
+    // }
+    async fetchData() {
 
         if (this.state.search !== '') {
-            console.log("inside fetch method")
-            const res = await axios.get(`${URL}/users/${this.state.search}`, )
-                .then(res => {
-                    console.log(res.data, "data")
-                    this.setState({
-                        user: res.data
-                    }, () => {
-                        console.log(res.data, "all dattaaaaa")
-                    })
-                    let cal = (res.data.expLoan.principle);
-                    let tenure = Number(res.data.expLoan.tenure);
-                    let interest = Number(res.data.expLoan.interest);
-                    let intr = Number(interest / (12 * 100))
-                    let r = 1 + intr;
-                    let e = Math.pow(r, tenure)
-                    let finalEmi = e / (e - 1)
-                    let emi = Math.round(cal * intr * finalEmi)
-                    this.setState({
-                        emi: emi,
-                        tenure: tenure,
-                        interest: intr
+            if (this.state.user !== undefined) {
+                console.log("inside fetch method")
+                localStorage.setItem('reqId', this.state.search)
+                const res = await axios.get(`${Data.url}/users/${this.state.search}`)
+                    .then(res => {
+                        console.log(res.data, "data")
+                        this.setState({
+                            user: res.data
+                        }, () => {
+                            console.log(res.data, "all dattaaaaa")
+                        })
+                        let cal = (res.data.expLoans.principle);
+                        console.log(cal, "----------------------")
+                        let tenure = Number(res.data.expLoans.tenure);
+                        console.log(tenure, "----------------------")
+                        let interest = Number(res.data.expLoans.intrest);
+                        console.log(typeof interest, "----------------------")
+                        let intr = Number(interest / (12 * 100))
+                        let r = 1 + intr;
+                        let e = Math.pow(r, tenure)
+                        let finalEmi = e / (e - 1)
+                        let emi = Math.round(cal * intr * finalEmi)
+                        this.setState({
+                            emi: emi,
+                            tenure: tenure,
+                            interest: intr
 
-                    })
-                    let arr = [];
-                    let date = this.state.user.expLoan.startDate.split('-');
-                    let day = Number(date[2]);
-                    let j = 0;
-                    let outstandingBal = 0;
-                    console.log("check", outstandingBal, outstandingBal, intr)
-                    let yr = Number(date[0]);
-                    console.log()
-                    let mon = 0;
-                    if (cal) {
-                        for (var i = 0; i < tenure; i++) {
-                            let row = {
-                                month: '',
-                                interest: '',
-                                principal: '',
-                                outstandingBal: '',
-                                emi: ''
+                        })
+                        let emiScheduler = [];
+                        let date = this.state.user.expLoans.startDate.split('-');
+                        let day = Number(date[2]);
+                        let j = 0;
+                        let outstandingBal = 0;
+                        let yr = Number(date[0]);
+                        let mon = 0;
+                        if (cal) {
+                            for (var i = 0; i < tenure; i++) {
+                                let row = {
+                                    month: '',
+                                    interest: '',
+                                    principal: '',
+                                    outstandingBal: '',
+                                    emi: ''
+                                }
+                                if (i === 0) {
+                                    mon = Number(date[1]);
+                                    outstandingBal = cal
+                                    console.log(outstandingBal, "iiiiii")
+                                }
+                                else {
+                                    mon = mon + 1;
+                                }
+                                row.month = day + '-' + mon + '-' + yr;
+                                row.emi = emi;
+                                let a = (intr * outstandingBal);
+                                let b = emi - a;
+                                row.interest = Math.round(a);
+                                row.principal = Math.round(b);
+                                outstandingBal = outstandingBal - (emi - Math.floor(a));
+                                outstandingBal = Math.round(outstandingBal);
+                                console.log(outstandingBal, "before 0")
+                                outstandingBal = (outstandingBal < 0) ? 0 : outstandingBal;
+                                row.outstandingBal = outstandingBal;
+                                // console.log('int:' + Math.round(a), 'prin:' + b, 'outstanding bal: ' + outstandingBal, 'emi : ', a + b, "-----")
+                                console.log('EMI :', emi, 'INT:', Math.round(a), 'Prin:', (emi - a), (emi - Math.floor(a)), 'Balance:', outstandingBal);
+                                if (mon >= 12) {
+                                    mon = 0;
+                                    yr = yr + 1
+                                }
+                                emiScheduler.push(row);
+                                j++;
                             }
-                            if (i === 0) {
-                                mon = Number(date[1]);
-                                outstandingBal = cal
-                                console.log(outstandingBal, "iiiiii")
-                            }
-                            else {
-                                mon = mon + 1;
-                            }
-                            row.month = day + '-' + mon + '-' + yr;
-                            row.emi = emi;
-                            let a = (intr * outstandingBal);
-                            let b = emi - a;
-                            row.interest = Math.round(a);
-                            row.principal = Math.round(b);
-                            outstandingBal = outstandingBal - (emi - Math.floor(a));
-                            outstandingBal = Math.round(outstandingBal);
-                            console.log(outstandingBal, "before 0")
-                            outstandingBal = (outstandingBal < 0) ? 0 : outstandingBal;
-                            row.outstandingBal = outstandingBal;
-                            // console.log('int:' + Math.round(a), 'prin:' + b, 'outstanding bal: ' + outstandingBal, 'emi : ', a + b, "-----")
-                            console.log('EMI :', emi, 'INT:', Math.round(a), 'Prin:', (emi - a), (emi - Math.floor(a)), 'Balance:', outstandingBal);
-                            if (mon >= 12) {
-                                mon = 0;
-                                yr = yr + 1
-                            }
-                            arr.push(row);
-                            j++;
                         }
-                    }
-                    this.setState({
-                        emiSchedule: arr
+                        const emivalue = [...emiScheduler]
+                        this.setState({
+                            user: { ...this.state.user, totalEmi: emivalue },
+                        })
+                        // this.search.value = "";
+
                     })
-                    this.search.value = "";
+                    .catch(e => {
+                        window.alert("Invalid request number")
+                        // this.search.value = "";
+                        // throw new Error(e.response.data);
+                    });
+                return res;
+            }
+            else {
+                console.log("??????????")
+                this.setState({
+                    user: this.state.user
                 })
-                .catch(e => {
-                    window.alert("Invalid request number")
-                    this.search.value = "";
-
-
-                    // throw new Error(e.response.data);
-                });
-            return res;
-        }
-        else {
-            window.alert("please enter valid Request number")
+            }
 
         }
+
 
     }
 
 
     render() {
-        console.log(typeof this.state.ctDate, "whole")
+        console.log(this.state.user, "whole")
         const { open } = this.state;
         const payment = [
             {
@@ -204,15 +253,16 @@ class PaymentScheduler extends React.Component {
         ]
         let modal = (
             <div>
-                <Modal size='small' open={open} onClose={this.close} closeOnDimmerClick={false} className="modalEdit" style={{ marginTop: '150px', marginLeft: '30%' }} closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}>
+                <Modal size='large' open={open} onClose={this.close} closeOnDimmerClick={false} className="modalEdit" style={{ marginTop: '150px', marginLeft: '10%' }} closeIcon={{ style: { top: '1.0535rem', right: '1rem' }, color: 'black', name: 'close' }}>
                     <Modal.Header>Payment details</Modal.Header>
                     <Modal.Content>
                         <Table striped>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell> EMI Due Date</Table.HeaderCell>
-                                    <Table.HeaderCell>Amount</Table.HeaderCell>
+                                    <Table.HeaderCell>EMI Amount</Table.HeaderCell>
                                     <Table.HeaderCell>Payment Date</Table.HeaderCell>
+                                    <Table.HeaderCell>Paid Amount</Table.HeaderCell>
                                     <Table.HeaderCell>Payment Mode</Table.HeaderCell>
 
                                 </Table.Row>
@@ -225,9 +275,16 @@ class PaymentScheduler extends React.Component {
                                     <Table.Cell>{this.state.currentData.emi}</Table.Cell>
                                     <Table.Cell>
                                         <input type="date"
-                                            name="Date" onBlur={(e) => this.handleOnChange(e)}
+                                            name="Date" onChange={(e) => this.handleOnChange(e)}
                                             placeholder="Payment Date"
                                             defaultValue={this.state.currentData.ctDate} />
+
+                                    </Table.Cell>
+                                    <Table.Cell>
+                                        <input type="number"
+                                            name="paidAmt" onChange={(e) => this.handleOnChangeEmi(e)}
+                                            placeholder="paid amount"
+                                            defaultValue={this.state.currentData.paidEmi} />
 
                                     </Table.Cell>
                                     <Table.Cell>
@@ -260,7 +317,7 @@ class PaymentScheduler extends React.Component {
                         <FormControl type="text" placeholder="Request Number...." className="mr-sm-2"
                             ref={el => this.search = el}
                             onChange={(e) => this.searchKey(e)} defaultValue={this.state.search} style={{ marginLeft: '187px', paddingRight: '35px' }} />
-                        <Icon size="large" inverted name='search' className="searchIcon" color='black' link onClick={() => this.fetchKey()} />
+                        <Icon size="large" inverted name='search' className="searchIcon" color='black' link onClick={() => this.fetchData()} />
                     </Form>
                 </div>
 
@@ -268,9 +325,9 @@ class PaymentScheduler extends React.Component {
                     <div className="align">
                         <h3>Payement Scheduler</h3>
                         {
-                            this.state.user.expLoan &&
+                            this.state.user.expLoans &&
                             <p>
-                                Principal amount: £{this.state.user.expLoan.principle}, Tenure: {this.state.user.expLoan.tenure} months and interest:{this.state.user.expLoan.interest}%
+                                Principal amount: £{this.state.user.expLoans.principle}, Tenure: {this.state.user.expLoans.tenure} months and interest:{this.state.user.expLoans.intrest}%
                             </p>
                         }
 
@@ -284,25 +341,29 @@ class PaymentScheduler extends React.Component {
                                 <Table.HeaderCell>Principal</Table.HeaderCell>
                                 <Table.HeaderCell>Interest</Table.HeaderCell>
                                 <Table.HeaderCell>TotalEmi</Table.HeaderCell>
+                                <Table.HeaderCell>Amount Paid</Table.HeaderCell>
+                                <Table.HeaderCell>BalanceEMI</Table.HeaderCell>
                                 <Table.HeaderCell>OutstandingAmount</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
 
                         <Table.Body className="tableHover">
                             {
-                                this.state.emiSchedule && this.state.emiSchedule.map((data, i) => {
-                                    { console.log(this.state.selectedRow === i, "checking.....") }
-                                    return <Table.Row className={this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
+                                this.state.user.emiScheduler && this.state.user.emiScheduler.map((data, i) => {
+                                    { console.log(this.state.user, "next prop...............") }
+                                    return <Table.Row className={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
                                         style={{
                                             cursor: 'pointer',
                                             textDecoration: 'none'
                                         }} onClick={() => this.show(data, i)}
-                                        disabled={this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
+                                        disabled={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
                                         <Table.Cell>{i + 1}</Table.Cell>
                                         <Table.Cell >{data.month}</Table.Cell>
                                         <Table.Cell>{data.principal}</Table.Cell>
                                         <Table.Cell>{data.interest}</Table.Cell>
                                         <Table.Cell>{data.emi}</Table.Cell>
+                                        <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : ''}</Table.Cell>
+                                        <Table.Cell>{data.balEmi !== undefined ? data.balEmi : ''}</Table.Cell>
                                         <Table.Cell>{data.outstandingBal}</Table.Cell>
                                     </Table.Row>
                                 })
