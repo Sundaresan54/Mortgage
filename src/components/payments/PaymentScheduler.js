@@ -3,7 +3,7 @@ import { Paper } from '@material-ui/core'
 import axios from 'axios'
 import { Data } from '../../config'
 
-import { Icon, Dropdown, Table, Modal, Button } from 'semantic-ui-react'
+import { Icon, Dropdown, Table, Modal, Button, Pagination } from 'semantic-ui-react'
 import { Form, FormControl } from 'react-bootstrap'
 import './style.css'
 class PaymentScheduler extends React.Component {
@@ -19,7 +19,8 @@ class PaymentScheduler extends React.Component {
             currentData: [],
             paid: false,
             indexValue: -1,
-            paidEmi: 0
+            paidEmi: 0,
+            activePage: 1
 
         }
     }
@@ -44,8 +45,20 @@ class PaymentScheduler extends React.Component {
         })
 
     }
+    handlePaginationChange = (e, { activePage }) => {
+
+        this.setState({ activePage })
+    }
     handleOnChange = (e) => {
-        let currentData = { ...this.state.currentData, ctDate: e.target.value }
+        let ctDate = e.target.value.split('-');
+        let ctDay = Number(ctDate[2]);
+        let ctMon = Number(ctDate[1]);
+        let ctYr = Number(ctDate[0]);
+
+        let ctMonth = ctDay + '-' + ctMon + '-' + ctYr;
+        console.log(ctMonth, "ct month.......")
+
+        let currentData = { ...this.state.currentData, ctDate: ctMonth }
         this.setState({
             currentData: currentData
         }, () => console.log(this.state.currentData, "date..???????????"))
@@ -61,43 +74,120 @@ class PaymentScheduler extends React.Component {
         const id = this.state.user.id;
         console.log(this.state.user, "user data current")
         let i = this.state.indexValue
-        let property = this.state.user.emiScheduler;
-        property[i]["paymentMode"] = this.state.currentData.paymentType;
-        property[i]["ctDate"] = this.state.currentData.ctDate;
-        property[i]["paidEmi"] = this.state.currentData.paidEmi;
-        let balEmi = this.state.emi - this.state.currentData.paidEmi
-        property[i]["balEmi"] = balEmi;
-        this.setState({
-            open: false,
-            user: { ...this.state.user, emiScheduler: property }
-        })
+        if (this.state.user.emiScheduler == undefined) {
+            let property = this.state.user.totalEmi;
+            property[i]["paymentMode"] = this.state.currentData.paymentType;
+            property[i]["ctDate"] = this.state.currentData.ctDate;
+            property[i]["paidEmi"] = this.state.currentData.paidEmi;
+            let balEmi = this.state.emi - this.state.currentData.paidEmi
+            property[i]["balEmi"] = balEmi;
+            this.setState({
+                open: false,
+                user: { ...this.state.user, emiScheduler: property }
+            }, (console.log(this.state.user, "ssssss")))
+        }
+        else {
+            let property = this.state.user.emiScheduler;
+            property[i]["paymentMode"] = this.state.currentData.paymentType;
+            property[i]["ctDate"] = this.state.currentData.ctDate;
+            property[i]["paidEmi"] = this.state.currentData.paidEmi;
+            let balEmi = this.state.emi - this.state.currentData.paidEmi
+            property[i]["balEmi"] = balEmi;
+            this.setState({
+                open: false,
+                user: { ...this.state.user, emiScheduler: property }
+            }, (console.log(this.state.user, "pppppp")))
+
+            let a = this.state.user.expLoans;
+            let b = this.state.user.emiScheduler
+            console.log(a, b, "iiiiiiii")
+
+            // // // for(var i =0 ;i<a.tenure;i++){
+
+            // // // }
+
+            // let ctDate = b[i].month.split('-');
+            // console.log(ctDate, "date.....")
+            // let ctDay = Number(ctDate[0]);
+            // let ctMon = Number(ctDate[1]);
+            // let ctYr = Number(ctDate[2]);
+
+            // let ctMonth = ctDay + '-' + ctMon + '-' + ctYr;
+            // console.log(ctMonth, "ct month.......")
+            // let date = b[i].ctDate.split('-');
+            // let day = Number(date[0]);
+            // let mon = Number(date[1]);
+            // let yr = Number(date[2]);
+            // let month = day + '-' + mon + '-' + yr;
+            // console.log(month, "llllllllll")
+
+            if ((this.state.user.emiScheduler[i].balEmi !== 0)) {
+                // let diff = Math.abs(ctDay - day)
+                // console.log(diff, "difference")
+                let a = 0.05;
+                let b = this.state.user.emiScheduler[i].balEmi * a;
+                let penality = this.state.user.emiScheduler[i].balEmi + b;
+                let newData = this.state.user.emiScheduler[i];
+                newData["unpaidPen"] = this.state.user.emiScheduler[i - 1].unpaidPen !== undefined ? penality + this.state.user.emiScheduler[i - 1].unpaidPen : penality;
+                let userData = this.state.user;
+                userData.emiScheduler[i] = newData;
+                console.log(userData, "data")
+                this.setState({
+                    user: userData
+                })
+
+                let totalAmount = this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen + this.state.currentData.paidEmi;
+
+                if (this.state.user.emiScheduler[i].paidEmi >= this.state.user.emiScheduler[i].emi) {
+                    let sub = this.state.user.emiScheduler[i].paidEmi - this.state.user.emiScheduler[i].emi;
+                    newData["unpaidPen"] = newData["unpaidPen"] - sub;
+                    userData.emiScheduler[i] = newData;
+                    this.setState({
+                        user: userData
+                    })
+                }
+
+                // let outstandingBal = this.state.user.emiScheduler[i].outstandingBal + penality
+                // console.log(outstandingBal, "outstandong balllllllll")
+                // let updatedData = this.state.user.emiScheduler
+                // let division = Number(this.state.tenure)-i
+                // let totalPen = Math.round(penality) / division
+                // let emiPen = this.state.emi + totalPen
+                // console.log("emiPen", emiPen)
+                // for (var j = i; j <= this.state.tenure; j++) {
+                //     // let afterPen = (this.state.interest * outstandingBal);
+                //     // console.log(afterPen, "afterppen")
+                //     // let PenDiff = emiPen - afterPen;
+                //     // console.log(PenDiff, "PenDiff")
+                //     // let interest = Math.round(afterPen);
+                //     // let principal = Math.round(PenDiff);
+                //     // outstandingBal = outstandingBal - PenDiff;
+                //     // outstandingBal = Math.round(outstandingBal);
+                //     // console.log(outstandingBal, "before 0")
+                //     // outstandingBal = (outstandingBal < 0) ? 0 : outstandingBal;
+
+                //     console.log("principal:", principal, "interest:", interest, "outstandingBal:", outstandingBal, "emi", emiPen)
+                //     // updatedData[i]["outstandingBal"] = outstandingBal;
+                //     // updatedData[i]["emi"] = emiPen;
+                //     // updatedData[i]["principal"] = PenDiff;
+                //     // updatedData[i]["interest"] = afterPen;
+                //     // console.log(updatedData[i], "value...........---------------------------------")
+                // }
+                // console.log(updatedData, "value...........---------------------------------")
+            }
+        }
+
+
+
         const res = await axios.put(`${Data.url}/users/${id}`, this.state.user)
             .then(res => {
                 console.log(res.data, "patched")
-                let a = res.data.user;
-                console.log(a)
-                //  let ctDate =a.emiScheduler.ctDate.split('-');
-                // let ctDay = Number(ctDate[2]);
-                // let ctMon = Number(ctDate[1]);
-                // let ctYr = Number(ctDate[0]);
-                // let ctMonth = ctDay + '-' + ctMon + '-' + ctYr;
-                // CSSConditionRule.log(ctMonth)
-                // let date = this.state.user.expLoans.startDate.split('-');
-                // let day = Number(date[2]);
-                // let mon = Number(date[1]);
-                // let yr = Number(date[0]);
-                // let month = day + '-' + mon + '-' + yr;
-                // if ((this.state.user.emiScheduler.balEmi !== 0)) {
-                //     let diff = ctDay - day
-                //     console.log(diff, "difference")
-                //     let a = 0.1;
-                //     let b = this.state.user.emiScheduler.balEmi * a;
-                //     let c = this.state.user.emiScheduler.balEmi + b;
-                // }
+
 
             })
             .catch(e => {
-                throw new Error(e.response.data);
+                // throw new Error(e.response);
+                window.alert("error occurred")
             });
         return res;
 
@@ -214,21 +304,15 @@ class PaymentScheduler extends React.Component {
                 return res;
             }
             else {
-                console.log("??????????")
                 this.setState({
                     user: this.state.user
                 })
             }
-
         }
-
-
     }
 
-
     render() {
-        console.log(this.state.user, "whole")
-        const { open } = this.state;
+        const { open, activePage } = this.state;
         const payment = [
             {
                 key: 'cash',
@@ -261,8 +345,9 @@ class PaymentScheduler extends React.Component {
                                 <Table.Row>
                                     <Table.HeaderCell> EMI Due Date</Table.HeaderCell>
                                     <Table.HeaderCell>EMI Amount</Table.HeaderCell>
+                                    <Table.HeaderCell>Penality</Table.HeaderCell>
                                     <Table.HeaderCell>Payment Date</Table.HeaderCell>
-                                    <Table.HeaderCell>Paid Amount</Table.HeaderCell>
+                                    <Table.HeaderCell>EMI+Penality</Table.HeaderCell>
                                     <Table.HeaderCell>Payment Mode</Table.HeaderCell>
 
                                 </Table.Row>
@@ -272,7 +357,11 @@ class PaymentScheduler extends React.Component {
                                 <Table.Row >
 
                                     <Table.Cell>{this.state.currentData.month}</Table.Cell>
-                                    <Table.Cell>{this.state.currentData.emi}</Table.Cell>
+                                    <Table.Cell>{this.state.currentData.emi}</Table.Cell>{
+                                        this.state.indexValue > 0 ? <Table.Cell> {this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen ? this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen : 'Nil'}</Table.Cell> : ''
+                                    }
+
+
                                     <Table.Cell>
                                         <input type="date"
                                             name="Date" onChange={(e) => this.handleOnChange(e)}
@@ -284,7 +373,7 @@ class PaymentScheduler extends React.Component {
                                         <input type="number"
                                             name="paidAmt" onChange={(e) => this.handleOnChangeEmi(e)}
                                             placeholder="paid amount"
-                                            defaultValue={this.state.currentData.paidEmi} />
+                                            defaultValue={this.state.indexValue > 0 ? this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen + this.state.currentData.paidEmi : this.state.currentData.paidEmi} />
 
                                     </Table.Cell>
                                     <Table.Cell>
@@ -344,35 +433,67 @@ class PaymentScheduler extends React.Component {
                                 <Table.HeaderCell>Amount Paid</Table.HeaderCell>
                                 <Table.HeaderCell>BalanceEMI</Table.HeaderCell>
                                 <Table.HeaderCell>OutstandingAmount</Table.HeaderCell>
+                                <Table.HeaderCell>Penality</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
+                        {
+                            this.state.user.emiScheduler === undefined ? <Table.Body className="tableHover">
+                                {
+                                    this.state.user.totalEmi && this.state.user.totalEmi.map((data, i) => {
+                                        return <Table.Row className={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
+                                            style={{
+                                                cursor: 'pointer',
+                                                textDecoration: 'none'
+                                            }} onClick={() => this.show(data, i)}
+                                            disabled={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
+                                            <Table.Cell>{i + 1}</Table.Cell>
+                                            <Table.Cell >{data.month}</Table.Cell>
+                                            <Table.Cell>{data.principal}</Table.Cell>
+                                            <Table.Cell>{data.interest}</Table.Cell>
+                                            <Table.Cell>{data.emi}</Table.Cell>
+                                            <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : ''}</Table.Cell>
+                                            <Table.Cell>{data.balEmi !== undefined ? data.balEmi : ''}</Table.Cell>
+                                            <Table.Cell>{data.outstandingBal}</Table.Cell>
+                                            <Table.Cell>{data.unpaidPen !== undefined ? data.unpaidPen : ''}</Table.Cell>
+                                        </Table.Row>
+                                    })
+                                }
 
-                        <Table.Body className="tableHover">
-                            {
-                                this.state.user.emiScheduler && this.state.user.emiScheduler.map((data, i) => {
-                                    { console.log(this.state.user, "next prop...............") }
-                                    return <Table.Row className={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
-                                        style={{
-                                            cursor: 'pointer',
-                                            textDecoration: 'none'
-                                        }} onClick={() => this.show(data, i)}
-                                        disabled={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
-                                        <Table.Cell>{i + 1}</Table.Cell>
-                                        <Table.Cell >{data.month}</Table.Cell>
-                                        <Table.Cell>{data.principal}</Table.Cell>
-                                        <Table.Cell>{data.interest}</Table.Cell>
-                                        <Table.Cell>{data.emi}</Table.Cell>
-                                        <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : ''}</Table.Cell>
-                                        <Table.Cell>{data.balEmi !== undefined ? data.balEmi : ''}</Table.Cell>
-                                        <Table.Cell>{data.outstandingBal}</Table.Cell>
-                                    </Table.Row>
-                                })
-                            }
+
+                            </Table.Body>
+                                : <Table.Body className="tableHover">
+                                    {
+                                        this.state.user.emiScheduler && this.state.user.emiScheduler.map((data, i) => {
+                                            return <Table.Row className={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
+                                                style={{
+                                                    cursor: 'pointer',
+                                                    textDecoration: 'none'
+                                                }} onClick={() => this.show(data, i)}
+                                                disabled={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
+                                                <Table.Cell>{i + 1}</Table.Cell>
+                                                <Table.Cell >{data.month}</Table.Cell>
+                                                <Table.Cell>{data.principal}</Table.Cell>
+                                                <Table.Cell>{data.interest}</Table.Cell>
+                                                <Table.Cell>{data.emi}</Table.Cell>
+                                                <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : ''}</Table.Cell>
+                                                <Table.Cell>{data.balEmi !== undefined ? data.balEmi : ''}</Table.Cell>
+                                                <Table.Cell>{data.outstandingBal}</Table.Cell>
+                                                <Table.Cell>{data.unpaidPen !== undefined ? data.unpaidPen : 'Nil'}</Table.Cell>
+                                            </Table.Row>
+                                        })
+                                    }
 
 
-                        </Table.Body>
+                                </Table.Body>
+                        }
                     </Table>
                     {modal}
+
+                    <Pagination
+                        defaultActivePage={5} totalPages={10}
+                        activePage={activePage}
+                        onPageChange={this.handlePaginationChange}
+                    />
                 </Paper>
 
             </div>
