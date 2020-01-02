@@ -221,7 +221,7 @@ class Mortgage extends React.Component {
         if ((expLoan.principle !== undefined && expLoan.principle !== '') && (expLoan.tenure !== undefined && expLoan.tenure !== '')
             && (expLoan.propertyType !== undefined && expLoan.propertyType !== '') && (expLoan.startDate !== undefined && expLoan.startDate !== '')) {
             console.log("heyyyyyyy")
-            let id = `Req${('000000' + this.state.totalUser).slice(-5)}`
+            let id = `Req${('000000' + this.state.totalUser + 1).slice(-5)}`
 
             let expLoans = { ...expLoan, radio }
             localStorage.setItem("ReqId", id);
