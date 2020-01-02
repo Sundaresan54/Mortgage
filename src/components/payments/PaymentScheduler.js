@@ -20,7 +20,8 @@ class PaymentScheduler extends React.Component {
             paid: false,
             indexValue: -1,
             paidEmi: 0,
-            activePage: 1
+            activePage: 1,
+            rows:10
 
         }
     }
@@ -46,8 +47,15 @@ class PaymentScheduler extends React.Component {
 
     }
     handlePaginationChange = (e, { activePage }) => {
-
         this.setState({ activePage })
+        let trimStart = (activePage-1)*this.state.rows;
+       let trimEnd = trimStart+this.state.rows;
+
+       let trimedData =this.state.user.emiScheduler!==undefined?this.state.user.emiScheduler.slice(trimStart,trimEnd): this.state.user.totalEmi.slice(trimStart,trimEnd)
+        console.log(trimedData,"data")
+       this.setState({
+           trimedData
+       })
     }
     handleOnChange = (e) => {
         let ctDate = e.target.value.split('-');
@@ -294,7 +302,7 @@ class PaymentScheduler extends React.Component {
                             user: { ...this.state.user, totalEmi: emivalue },
                         })
                         // this.search.value = "";
-
+                        // this.handlePaginationChange();
                     })
                     .catch(e => {
                         window.alert("Invalid request number")
@@ -463,13 +471,13 @@ class PaymentScheduler extends React.Component {
                             </Table.Body>
                                 : <Table.Body className="tableHover">
                                     {
-                                        this.state.user.emiScheduler && this.state.user.emiScheduler.map((data, i) => {
-                                            return <Table.Row className={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
+                                        this.state.trimedData && this.state.trimedData.map((data, i) => {
+                                            return <Table.Row className={this.state.trimedData && this.state.trimedData[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
                                                 style={{
                                                     cursor: 'pointer',
                                                     textDecoration: 'none'
                                                 }} onClick={() => this.show(data, i)}
-                                                disabled={this.state.user.emiScheduler && this.state.user.emiScheduler[i].paymentMode !== undefined ? true : false} >
+                                                disabled={this.state.trimedData && this.state.trimedData[i].paymentMode !== undefined ? true : false} >
                                                 <Table.Cell>{i + 1}</Table.Cell>
                                                 <Table.Cell >{data.month}</Table.Cell>
                                                 <Table.Cell>{data.principal}</Table.Cell>
@@ -489,7 +497,7 @@ class PaymentScheduler extends React.Component {
                     </Table>
                     {modal}
 
-                    <Pagination
+                    <Pagination 
                         defaultActivePage={5} totalPages={10}
                         activePage={activePage}
                         onPageChange={this.handlePaginationChange}
