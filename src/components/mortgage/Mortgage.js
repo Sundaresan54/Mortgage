@@ -221,7 +221,8 @@ class Mortgage extends React.Component {
         if ((expLoan.principle !== undefined && expLoan.principle !== '') && (expLoan.tenure !== undefined && expLoan.tenure !== '')
             && (expLoan.propertyType !== undefined && expLoan.propertyType !== '') && (expLoan.startDate !== undefined && expLoan.startDate !== '')) {
             console.log("heyyyyyyy")
-            let id = `Req${('000000' + this.state.totalUser + 1).slice(-5)}`
+            let tot = this.state.totalUser + 1
+            let id = `Req${('000000' + tot).slice(-5)}`
 
             let expLoans = { ...expLoan, radio }
             localStorage.setItem("ReqId", id);
@@ -304,24 +305,57 @@ class Mortgage extends React.Component {
         })
 
     }
-    addAsset = () => {
+    addAsset = async () => {
         this.setState({
             tab: true, open: false,
-            property: { ...this.state.property, uploadDoc: this.state.upload }
+            property: { ...this.state.property}
 
         })
 
         let property = this.state.totalProperty;
+        console.log(this.state.totalProperty, "propweryyyy")
         property.push({ ...this.state.property });
         console.log('-----', property)
         this.propValue.value = "";
+        console.log(property, "proerty12333-----")
         this.setState({
             totalProperty: property,
             tab: true
+
         }, () => {
             console.log("icon clicked", this.state.totalProperty);
         })
+        let tot = this.state.totalUser + 1;
+        let id = `Req${('000000' + tot).slice(-5)}`
+        let l = property.length;
+        let file1 = property[l-1].file1;
+        let file2 = property[l-1].file2;
+        let file3 = property[l-1].file3;
+        let data = new FormData()
+        data.append('id', id)
+        data.append('file1', file1)
+        data.append('file2', file2)
+        data.append('file3', file3)
+        console.log(data, "......uplaod datass")
+
+
+
+
+        const res = await axios.post("http://localhost:4000/upload", data)
+            .then(res => {
+                console.log(res.data, "hello")
+                this.setState({
+
+                })
+
+            })
+            .catch(e => {
+                console.log(e)
+                window.alert("data not send")
+            })
+        return res;
     }
+
 
     handleLiability = (e) => {
         this.setState({
@@ -433,40 +467,63 @@ class Mortgage extends React.Component {
         console.log(",.,.,.,.,.,.,.", this.state.expLoan)
     }
 
-    handleUpload = (e) => {
+    handleUpload = async (e) => {
 
         let property = { ...this.state.property }
-        let file1 = {}
-        file1["name"] = e.target.files[0].name;
-        file1["size"] = e.target.files[0].size;
-        file1["type"] = e.target.files[0].type;
-        console.log(file1, "inside")
+        // let tot = this.state.totalUser + 1;
+        // let id = `Req${('000000' + tot).slice(-5)}`
+        // // let a = e.target.files[0]
+        // let data = new FormData()
+        // data.append('id', id)
+        // data.append('file', e.target.files[0])
+        // console.log(data, "......uplaod datass")
+        let file1 = e.target.files[0];
+
+        // let body = {
+        //     data
+        // }
+        // data.append('id', id)
+        // file1["name"] = e.target.files[0].name;
+        // file1["size"] = e.target.files[0].size;
+        // file1["type"] = e.target.files[0].type;
+        // console.log(file1, "inside")
+
+        // const res = await axios.post("http://localhost:4000/upload", data)
+        //     .then(res => {
+        //         console.log(res.data)
+        //         file1 = res.data;
+        //     })
+        //     .catch(e => {
+        //         console.log(e)
+        //         window.alert("data not send")
+        //     })
         this.setState({
-            upload: { ...this.state.upload, file1: file1 },
-            property: { ...property, ...this.state.upload, file1: file1 }
-        })
+            // upload: { ...this.state.upload, file1: file1 },
+            property: { ...property, file1: file1 }
+        }, () => console.log(this.state.property, "oppppppppp"))
+        // return res;
     }
     handleDoc1 = (e) => {
         let property = { ...this.state.property }
-        let file2 = {}
-        file2["name"] = e.target.files[0].name;
-        file2["size"] = e.target.files[0].size;
-        file2["type"] = e.target.files[0].type;
+        let file2 = e.target.files[0]
+        // file2["name"] = e.target.files[0].name;
+        // file2["size"] = e.target.files[0].size;
+        // file2["type"] = e.target.files[0].type;
         this.setState({
-            upload: { ...this.state.upload, file2: file2 },
-            property: { ...property, ...this.state.upload, file2: file2 }
+            // upload: { ...this.state.upload, file2: file2 },
+            property: { ...property, file2: file2 }
 
         })
     }
     handleDoc2 = (e) => {
         let property = { ...this.state.property }
-        let file3 = {}
-        file3["name"] = e.target.files[0].name;
-        file3["size"] = e.target.files[0].size;
-        file3["type"] = e.target.files[0].type;
+        let file3 = e.target.files[0]
+        // file3["name"] = e.target.files[0].name;
+        // file3["size"] = e.target.files[0].size;
+        // file3["type"] = e.target.files[0].type;
         this.setState({
-            upload: { ...this.state.upload, file3: file3 },
-            property: { ...property, ...this.state.upload, file3: file3 }
+            // upload: { ...this.state.upload, file3: file3 },
+            property: { ...property, file3: file3 }
 
         })
     }

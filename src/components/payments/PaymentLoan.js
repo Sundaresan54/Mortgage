@@ -104,12 +104,13 @@ class PaymentLoan extends React.Component {
               <Table.HeaderCell>Intrest</Table.HeaderCell>
               <Table.HeaderCell>Start Date</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
+              <Table.HeaderCell>Documents</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
             {this.state.user && this.state.user.map((user, i) => {
-              console.log(user)
+              console.log(user, user.totalProperty[0].file1.name, "file name")
               return <Table.Row key={i}>
                 <Table.Cell>{i + 1}</Table.Cell>
                 <Table.Cell>{user.id}</Table.Cell>
@@ -130,6 +131,28 @@ class PaymentLoan extends React.Component {
                     defaultValue={user.status ? user.status : ''}
                   />
                 </Table.Cell>
+                <Table.Cell>
+                  {
+                    user.totalProperty.map((total, key) => {
+                      return (<div>
+                        <p key={key}>
+                        <a href="javascript:;">{total ? total.file1.name : ''}</a> ,
+                        
+                      </p>
+                      <p>
+                      <a href="javascript:;">{total ? total.file2.name : ''}</a>,
+                        
+
+                      </p>
+                      <p>
+                      <a href="javascript:;">{total ? total.file3.name : ''}</a>
+                      </p>
+                      </div>
+                      )
+                    })
+                  }
+                </Table.Cell>
+                {/* {console.log(user.totalProperty.map(property => { property }), "tpotal property ......")} */}
               </Table.Row>
 
             })}

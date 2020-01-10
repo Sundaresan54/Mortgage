@@ -22,6 +22,7 @@ class PaymentScheduler extends React.Component {
             paidEmi: 0,
             activePage: 1,
             rows: 10,
+            currentDate: 0
 
         }
     }
@@ -70,12 +71,20 @@ class PaymentScheduler extends React.Component {
         let trim = this.state.user
         console.log(this.state.user, "new update")
         console.log("hhhh")
-        let trimedData = trim.emiScheduler !== undefined ? trim.emiScheduler.slice(trimStart, trimEnd) : trim.totalEmi.slice(trimStart, trimEnd)
+        let trimedData = trim.emiScheduler !== undefined ? (trim.emiScheduler.slice(trimStart, trimEnd) ? trim.emiScheduler.slice(trimStart, trimEnd) : '') : trim.totalEmi.slice(trimStart, trimEnd)
         console.log(trimedData, "data")
         this.setState({
             trimedData
         })
 
+    }
+    handleKeyPress = (event) => {
+        console.log("hello", event)
+        // console.log("hello")
+        if (event.key == 'Enter') {
+            console.log("----------")
+            this.fetchData();
+        }
     }
     handleOnChange = (e) => {
         let ctDate = e.target.value.split('-');
@@ -225,9 +234,11 @@ class PaymentScheduler extends React.Component {
     //         });
     //     return res;
     // }
-    async fetchData() {
+
+    async fetchData(e) {
 
         if (this.state.search !== '') {
+
             if (this.state.user !== undefined) {
                 console.log("inside fetch method")
                 localStorage.setItem('reqId', this.state.search)
@@ -305,17 +316,18 @@ class PaymentScheduler extends React.Component {
                         this.setState({
                             user: { ...this.state.user, totalEmi: emivalue, },
                         })
-                        // this.search.value = "";
+                        this.search.value = "";
+                        let active = {
+                            activePage: this.state.activePage
+                        }
+                        this.handlePaginationChange(null, active)
                     })
                     .catch(e => {
                         window.alert("Invalid request number")
-                        // this.search.value = "";
+                        this.search.value = "";
                         // throw new Error(e.response.data);
                     });
-                let active = {
-                    activePage: this.state.activePage
-                }
-                this.handlePaginationChange(null, active)
+
                 return res;
             }
             else {
@@ -324,11 +336,27 @@ class PaymentScheduler extends React.Component {
                 })
             }
         }
+        else {
+            window.alert("Please Enter Request ID")
+        }
+    }
+    componentDidMount() {
+        let d = new Date();
+        let month = ("00" + (d.getMonth() + 1)).slice(-2)
+        console.log("month", month)
+        let day = ("00" + (d.getDate())).slice(-2);
+        let yr = d.getFullYear()
+        let currentDate = yr + '-' + month + '-' + day
+        console.log(currentDate, "uuuu")
+        this.setState({
+            currentDate: currentDate
+        })
     }
 
     render() {
         const { open, activePage } = this.state;
         console.log("index value", this.state.indexValue)
+
         const payment = [
             {
                 key: 'cash',
@@ -383,6 +411,7 @@ class PaymentScheduler extends React.Component {
                                         <input type="date"
                                             name="Date" onChange={(e) => this.handleOnChange(e)}
                                             placeholder="Payment Date"
+                                            min={this.state.currentDate}
                                             defaultValue={this.state.currentData.ctDate} />
 
                                     </Table.Cell>
@@ -392,7 +421,7 @@ class PaymentScheduler extends React.Component {
                                             placeholder="paid amount"
                                             defaultValue={this.state.user.emiScheduler ? (this.state.indexValue > 0
                                                 ? (this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen ? this.state.user.emiScheduler[this.state.indexValue - 1].unpaidPen : 0) + this.state.currentData.paidEmi :
-                                                this.state.user.emiScheduler[this.state.indexValue].unpaidPen + this.state.currentData.paidEmi) :
+                                                this.state.currentData.paidEmi) :
                                                 this.state.currentData.paidEmi} />
 
                                     </Table.Cell>
@@ -422,12 +451,12 @@ class PaymentScheduler extends React.Component {
                     <h2 className="heading-m">
                         Payment Scheduler
                 </h2>
-                    <Form inline style={{ marginLeft: '200px' }} >
+                    <div inline style={{ marginLeft: '200px', display: 'flex', marginTop: '10px' }} >
                         <FormControl type="text" placeholder="Request Number...." className="mr-sm-2"
                             ref={el => this.search = el}
-                            onChange={(e) => this.searchKey(e)} defaultValue={this.state.search} style={{ marginLeft: '187px', paddingRight: '35px' }} />
-                        <Icon size="large" inverted name='search' className="searchIcon" color='black' link onClick={() => this.fetchData()} />
-                    </Form>
+                            onChange={(e) => this.searchKey(e)} defaultValue={this.state.search} style={{ marginLeft: '187px', paddingRight: '35px' }} onKeyPress={this.handleKeyPress} />
+                        <Icon size="large" inverted name='search' style={{ marginTop: '7px' }} className="searchIcon" color='black' link onClick={() => this.fetchData()} />
+                    </div>
                 </div>
 
                 <Paper style={{ marginRight: '0px', padding: '15px', width: '97%', height: "fit-content", marginBottom: '10px', marginLeft: '18px', marginTop: '25px' }}>
@@ -457,6 +486,7 @@ class PaymentScheduler extends React.Component {
                             </Table.Row>
                         </Table.Header>
                         <Table.Body className="tableHover">
+                            {console.log(this.state.trimedData, "trimed data what")}
                             {
                                 this.state.trimedData && this.state.trimedData.map((data, i) => {
                                     return <Table.Row className={this.state.trimedData && this.state.trimedData[i].paymentMode !== undefined ? "tableSelected" : ""} key={i}
@@ -471,8 +501,8 @@ class PaymentScheduler extends React.Component {
                                         <Table.Cell>{data.principal}</Table.Cell>
                                         <Table.Cell>{data.interest}</Table.Cell>
                                         <Table.Cell>{data.emi}</Table.Cell>
-                                        <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : ''}</Table.Cell>
-                                        <Table.Cell>{data.balEmi !== undefined ? data.balEmi : ''}</Table.Cell>
+                                        <Table.Cell>{data.paidEmi !== undefined ? data.paidEmi : 'Nil'}</Table.Cell>
+                                        <Table.Cell>{data.balEmi !== undefined ? data.balEmi : 'Nil'}</Table.Cell>
                                         <Table.Cell>{data.outstandingBal}</Table.Cell>
                                         <Table.Cell>{data.unpaidPen !== undefined ? data.unpaidPen : 'Nil'}</Table.Cell>
                                     </Table.Row>
@@ -484,12 +514,14 @@ class PaymentScheduler extends React.Component {
 
                     </Table>
                     {modal}
+                    {
+                        this.state.trimedData && <Pagination style={{ float: "right", marginTop: '20px' }}
+                            totalPages={10}
+                            activePage={activePage}
+                            onPageChange={this.handlePaginationChange}
+                        />
+                    }
 
-                    <Pagination
-                        defaultActivePage={5} totalPages={10}
-                        activePage={activePage}
-                        onPageChange={this.handlePaginationChange}
-                    />
                 </Paper>
 
             </div>
